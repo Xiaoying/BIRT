@@ -1,0 +1,2175 @@
+/*************************************************************************************
+ * Copyright (c) 2004-2009 Actuate Corporation and others.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Actuate Corporation - Initial implementation.
+ ************************************************************************************/
+
+package org.eclipse.birt.report.designer.internal.ui.editors.script;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.eclipse.birt.core.ui.swt.custom.CustomChooserComposite;
+import org.eclipse.birt.core.ui.swt.custom.TextCombo;
+import org.eclipse.birt.core.ui.swt.custom.TextComboViewer;
+import org.eclipse.birt.report.designer.core.model.SessionHandleAdapter;
+import org.eclipse.birt.report.designer.core.model.views.outline.ScriptElementNode;
+import org.eclipse.birt.report.designer.core.model.views.outline.ScriptObjectNode;
+import org.eclipse.birt.report.designer.core.util.mediator.IColleague;
+import org.eclipse.birt.report.designer.core.util.mediator.request.ReportRequest;
+import org.eclipse.birt.report.designer.internal.ui.editors.ReportColorConstants;
+import org.eclipse.birt.report.designer.internal.ui.script.JSSyntaxContext;
+import org.eclipse.birt.report.designer.internal.ui.script.ScriptValidator;
+import org.eclipse.birt.report.designer.internal.ui.views.data.DataViewPage;
+import org.eclipse.birt.report.designer.internal.ui.views.data.DataViewTreeViewerPage;
+import org.eclipse.birt.report.designer.internal.ui.views.outline.DesignerOutlinePage;
+import org.eclipse.birt.report.designer.internal.ui.views.property.ReportPropertySheetPage;
+import org.eclipse.birt.report.designer.nls.Messages;
+import org.eclipse.birt.report.designer.ui.IReportGraphicConstants;
+import org.eclipse.birt.report.designer.ui.ReportPlatformUIImages;
+import org.eclipse.birt.report.designer.ui.scripts.IScriptContextInfo;
+import org.eclipse.birt.report.designer.ui.scripts.IScriptContextProvider;
+import org.eclipse.birt.report.designer.ui.util.ExceptionUtil;
+import org.eclipse.birt.report.designer.ui.views.ElementAdapterManager;
+import org.eclipse.birt.report.designer.ui.views.ProviderFactory;
+import org.eclipse.birt.report.designer.ui.views.attributes.AttributeViewPage;
+import org.eclipse.birt.report.designer.util.DEUtil;
+import org.eclipse.birt.report.designer.util.FontManager;
+import org.eclipse.birt.report.model.api.DesignElementHandle;
+import org.eclipse.birt.report.model.api.ExtendedItemHandle;
+import org.eclipse.birt.report.model.api.ModuleHandle;
+import org.eclipse.birt.report.model.api.PropertyHandle;
+import org.eclipse.birt.report.model.api.ScriptDataSourceHandle;
+import org.eclipse.birt.report.model.api.activity.SemanticException;
+import org.eclipse.birt.report.model.api.metadata.IArgumentInfo;
+import org.eclipse.birt.report.model.api.metadata.IArgumentInfoList;
+import org.eclipse.birt.report.model.api.metadata.IClassInfo;
+import org.eclipse.birt.report.model.api.metadata.IElementPropertyDefn;
+import org.eclipse.birt.report.model.api.metadata.IMethodInfo;
+import org.eclipse.birt.report.model.api.metadata.IPropertyDefn;
+import org.eclipse.birt.report.model.api.metadata.ITemplateMethodInfo;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.ObjectUndoContext;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.gef.ui.actions.ActionRegistry;
+import org.eclipse.gef.ui.views.palette.PalettePage;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.jface.text.IUndoManager;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.text.undo.DocumentUndoEvent;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoListener;
+import org.eclipse.text.undo.IDocumentUndoManager;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.MultiPageEditorSite;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+
+/**
+ * Main class of javaScript editor
+ * 
+ */
+
+public class JSEditor extends EditorPart implements IColleague
+{
+
+	protected static Logger logger = Logger.getLogger( JSEditor.class.getName( ) );
+
+	private static final String NO_EXPRESSION = Messages.getString( "JSEditor.Display.NoExpression" ); //$NON-NLS-1$
+
+	static final String METHOD_DISPLAY_INDENT = "  "; //$NON-NLS-1$
+
+	static final String VIEWER_CATEGORY_KEY = "Category"; //$NON-NLS-1$
+
+	static final String VIEWER_CATEGORY_CONTEXT = "context"; //$NON-NLS-1$
+
+	private IEditorPart editingDomainEditor;
+
+	Combo cmbExpList = null;
+
+	TextCombo cmbSubFunctions = null;
+
+	ComboViewer cmbExprListViewer;
+
+	TextComboViewer cmbSubFunctionsViewer;
+
+	private IPropertyDefn cmbItemLastSelected = null;
+
+	private boolean editorUIEnabled = true;
+
+	/** the tool bar for validation */
+	private ToolBar validateTool = null;
+
+	/** the tool button for Reset */
+	private ToolItem butReset = null;
+
+	/** the tool button for Validate */
+	private ToolItem butValidate = null;
+
+	/** the tool button for enable description */
+	private ToolItem butHelp = null;
+
+	/** the icon for validator, default hide */
+	private Label validateIcon = null;
+
+	/** the main pane */
+	private Composite mainPane = null;
+
+	/** the description pane */
+	private Composite descriptionPane = null;
+
+	/** the script's description about current method. */
+	private Text descriptionText = null;
+
+	private Label ano;
+
+	private final HashMap selectionMap = new HashMap( );
+
+	private boolean isModified;
+
+	private Object editObject;
+
+	private boolean isSaveScript = false;
+	/**
+	 * Palette page
+	 */
+	public TreeViewPalettePage palettePage = new TreeViewPalettePage( );
+
+	/** the script editor, dosen't include controller. */
+	private IScriptEditor scriptEditor;
+
+	/** the script validator */
+	private ScriptValidator scriptValidator = null;
+
+	/** the flag if the text listener is enabled. */
+	private boolean isTextListenerEnable = true;
+
+	/** the location which is not dirty. */
+	private int cleanPoint = -1;
+
+	/** Indicates that the described document event is about to be undone. */
+	private boolean undoing = false;
+
+	/** The listener for document changed. */
+	private final IDocumentListener documentListener = new IDocumentListener( ) {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged
+		 * (org.eclipse.jface.text.DocumentEvent)
+		 */
+		public void documentAboutToBeChanged( DocumentEvent event )
+		{
+			// Does nothing.
+			return;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse
+		 * .jface.text.DocumentEvent)
+		 */
+		public void documentChanged( DocumentEvent event )
+		{
+			if ( isTextListenerEnable )
+			{
+				markDirty( );
+			}
+
+			// Disables buttons if text is empty.
+			String text = getEditorText( );
+			boolean butEnabled = editorUIEnabled
+					&& text != null
+					&& text.length( ) > 0;
+
+			butReset.setEnabled( butEnabled );
+			butValidate.setEnabled( butEnabled );
+		}
+	};
+
+	/** the listener for undo operation. */
+	private final IDocumentUndoListener undoListener = new IDocumentUndoListener( ) {
+
+		/** The latest clear point for redoing. */
+		private int lastClearPoint = -1;
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.text.undo.IDocumentUndoListener#documentUndoNotification
+		 * (org.eclipse.text.undo.DocumentUndoEvent)
+		 */
+		public void documentUndoNotification( DocumentUndoEvent event )
+		{
+			if ( event == null )
+			{
+				return;
+			}
+
+			int type = event.getEventType( );
+			boolean undone = ( type & DocumentUndoEvent.UNDONE ) != 0;
+			boolean redone = ( type & DocumentUndoEvent.REDONE ) != 0;
+
+			undoing = ( type & ( DocumentUndoEvent.ABOUT_TO_REDO | DocumentUndoEvent.ABOUT_TO_UNDO ) ) != 0;
+
+			if ( undoing || !( undone || redone ) )
+			{
+				return;
+			}
+
+			if ( undone )
+			{
+				lastClearPoint = cleanPoint;
+				if ( cleanPoint != getUndoLevel( ) - 1 )
+				{
+					// Does nothing if not clean point.
+					return;
+				}
+			}
+			else if ( redone )
+			{
+				if ( cleanPoint < 0 )
+				{
+					cleanPoint = lastClearPoint;
+				}
+				if ( cleanPoint != getUndoLevel( ) + 1 )
+				{
+					// Does nothing if not clean point.
+					return;
+				}
+			}
+
+			// Removes dirty flag when undo/redo to the clean point.
+			setIsModified( false );
+			( (IFormPage) getParentEditor( ) ).getEditor( )
+					.editorDirtyStateChanged( );
+
+			firePropertyChange( PROP_DIRTY );
+		}
+	};
+
+	/**
+	 * JSEditor - constructor
+	 */
+	public JSEditor( IEditorPart parent )
+	{
+		super( );
+		this.editingDomainEditor = parent;
+		setSite( parent.getEditorSite( ) );
+		scriptEditor = createScriptEditor( );
+	}
+
+	/**
+	 * Creates script editor, dosen't include controller
+	 * 
+	 * @return a script editor
+	 */
+	protected IScriptEditor createScriptEditor( )
+	{
+		return new ScriptEditor( getParentEditor( ) );
+	}
+
+	/**
+	 * @see AbstractTextEditor#doSave(IProgressMonitor )
+	 */
+	public void doSave( IProgressMonitor monitor )
+	{
+		saveModel( );
+	}
+
+	public void doSave( IProgressMonitor monitor, boolean chnageText )
+	{
+		isSaveScript = !chnageText;
+		saveModel( );
+		isSaveScript = false;
+	}
+
+	public boolean isDirty( )
+	{
+		return isCodeModified( );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.editors.text.TextEditor#isSaveAsAllowed()
+	 */
+	public boolean isSaveAsAllowed( )
+	{
+		return true;
+	}
+
+	/**
+	 * disposes all color objects
+	 */
+	public void dispose( )
+	{
+		// colorManager.dispose( );
+
+		 //remove the mediator listener
+//		 SessionHandleAdapter.getInstance( )
+//		 .getMediator( root )
+//		 .removeColleague( this );
+		selectionMap.clear( );
+		editingDomainEditor = null;
+
+		if ( scriptEditor != null )
+		{
+			scriptEditor.dispose( );
+			scriptEditor = null;
+		}
+
+		super.dispose( );
+		// ( (ReportMultiPageEditorSite) getSite( ) ).dispose( );
+		( (MultiPageEditorSite) getSite( ) ).dispose( );
+	}
+
+	// Parameter names are constructed by taking the java class name
+	// and make the first letter lowercase.
+	// If there are more than 2 uppercase letters, it's shortened as the list of
+	// those. For instance IChartScriptContext becomes icsc
+
+	protected static String convertToParameterName( String fullName )
+	{
+		// strip the full qualified name
+		fullName = fullName.substring( fullName.lastIndexOf( '.' ) + 1 );
+		int upCase = 0;
+		SortedMap caps = new TreeMap( );
+		for ( int i = 0; i < fullName.length( ); i++ )
+		{
+			char character = fullName.charAt( i );
+			if ( Character.isUpperCase( character ) )
+			{
+				upCase++;
+				caps.put( Integer.valueOf( i ), Integer.valueOf( character ) );
+
+			}
+		}
+		if ( upCase > 2 )
+		{
+			StringBuffer result = new StringBuffer( );
+			for ( Iterator iter = caps.values( ).iterator( ); iter.hasNext( ); )
+			{
+				result.append( (char) ( (Integer) iter.next( ) ).intValue( ) );
+			}
+			return result.toString( ).toLowerCase( );
+		}
+		else
+			return fullName.substring( 0, 1 ).toLowerCase( )
+					+ fullName.substring( 1 );
+	}
+
+	private void updateExtensionScriptContext( Object[] adapters,
+			JSSyntaxContext context, String contextName, String methodName )
+	{
+		if ( adapters == null )
+		{
+			return;
+		}
+
+		for ( Object adapt : adapters )
+		{
+			IScriptContextProvider contextProvider = (IScriptContextProvider) adapt;
+
+			if ( contextProvider != null )
+			{
+				IScriptContextInfo[] infos;
+
+				if ( methodName == null )
+				{
+					infos = contextProvider.getScriptContext( contextName );
+				}
+				else
+				{
+					infos = contextProvider.getScriptContext( contextName,
+							methodName );
+				}
+
+				if ( infos != null )
+				{
+					for ( IScriptContextInfo info : infos )
+					{
+						if ( info != null )
+						{
+							String name = info.getName( );
+							IClassInfo type = info.getType( );
+
+							if ( name != null && type != null )
+							{
+								context.setVariable( name, type );
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void updateScriptContext( DesignElementHandle handle, String method )
+	{
+		List args = DEUtil.getDesignElementMethodArgumentsInfo( handle, method );
+		JSSyntaxContext context = scriptEditor.getContext( );
+
+		context.clear( );
+
+		for ( Iterator iter = args.iterator( ); iter.hasNext( ); )
+		{
+			IArgumentInfo element = (IArgumentInfo) iter.next( );
+			String name = element.getName( );
+			String type = element.getType( );
+
+			// try load system class info first, if failed, then try extension
+			// class info
+			if ( !context.setVariable( name, type ) )
+			{
+				context.setVariable( name, element.getClassType( ) );
+			}
+		}
+
+		Object[] adapters = ElementAdapterManager.getAdapters( handle,
+				IScriptContextProvider.class );
+
+		// update script context from adapter
+		updateExtensionScriptContext( adapters, context, method, null );
+
+		if ( handle instanceof ExtendedItemHandle )
+		{
+			ExtendedItemHandle exHandle = (ExtendedItemHandle) handle;
+
+			List mtds = exHandle.getMethods( method );
+
+			// TODO implement better function-wise code assistant.
+
+			if ( mtds != null && mtds.size( ) > 0 )
+			{
+				for ( int i = 0; i < mtds.size( ); i++ )
+				{
+					IMethodInfo mi = (IMethodInfo) mtds.get( i );
+
+					for ( Iterator itr = mi.argumentListIterator( ); itr.hasNext( ); )
+					{
+						IArgumentInfoList ailist = (IArgumentInfoList) itr.next( );
+
+						for ( Iterator argItr = ailist.argumentsIterator( ); argItr.hasNext( ); )
+						{
+							IArgumentInfo aiinfo = (IArgumentInfo) argItr.next( );
+
+							String argName = aiinfo.getName( );
+							IClassInfo ci = aiinfo.getClassType( );
+
+							if ( argName == null || argName.length( ) == 0 )
+							{
+								argName = convertToParameterName( ci.getName( ) );
+							}
+
+							context.setVariable( argName, ci );
+						}
+					}
+
+					// update script context from adapter
+					if ( mi.getName( ) != null )
+					{
+						updateExtensionScriptContext( adapters,
+								context,
+								method,
+								mi.getName( ) );
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
+	 * .Composite)
+	 */
+	public void createPartControl( Composite parent )
+	{
+		Composite child = this.initEditorLayout( parent );
+
+		// Script combo
+		cmbExprListViewer = new ComboViewer( cmbExpList );
+		JSExpListProvider provider = new JSExpListProvider( );
+		cmbExprListViewer.setContentProvider( provider );
+		cmbExprListViewer.setLabelProvider( provider );
+		cmbExprListViewer.setData( VIEWER_CATEGORY_KEY, VIEWER_CATEGORY_CONTEXT );
+
+		// SubFunctions combo
+		JSSubFunctionListProvider subProvider = new JSSubFunctionListProvider( this );
+
+		// also add subProvider as listener of expr viewer.
+		cmbExprListViewer.addSelectionChangedListener( subProvider );
+
+		cmbSubFunctions.addListener( CustomChooserComposite.DROPDOWN_EVENT,
+				new Listener( ) {
+
+					public void handleEvent( Event event )
+					{
+						cmbSubFunctions.deselectAll( );
+
+						ScriptParser parser = new ScriptParser( getEditorText( ) );
+
+						Collection coll = parser.getAllMethodInfo( );
+
+						for ( Iterator itr = coll.iterator( ); itr.hasNext( ); )
+						{
+							IScriptMethodInfo mtd = (IScriptMethodInfo) itr.next( );
+
+							cmbSubFunctions.markSelection( METHOD_DISPLAY_INDENT
+									+ mtd.getName( ) );
+						}
+					}
+
+				} );
+
+		cmbSubFunctionsViewer = new TextComboViewer( cmbSubFunctions );
+		cmbSubFunctionsViewer.setContentProvider( subProvider );
+		cmbSubFunctionsViewer.setLabelProvider( subProvider );
+		cmbSubFunctionsViewer.addSelectionChangedListener( subProvider );
+
+		// Initialize the model for the document.
+		Object model = getModel( );
+		if ( model != null )
+		{
+			cmbExpList.setVisible( true );
+			cmbSubFunctions.setVisible( true );
+			setComboViewerInput( model );
+		}
+		else
+		{
+			setComboViewerInput( Messages.getString( "JSEditor.Input.trial" ) ); //$NON-NLS-1$
+		}
+		cmbExprListViewer.addSelectionChangedListener( palettePage.getSupport( ) );
+		cmbExprListViewer.addSelectionChangedListener( new ISelectionChangedListener( ) {
+
+			/**
+			 * selectionChanged( event) - This listener implementation is
+			 * invoked when an item in the combo box is selected, - It saves the
+			 * current editor contents. - Updates the editor content with the
+			 * expression corresponding to the selected method name or
+			 * expression. name.
+			 */
+			public void selectionChanged( SelectionChangedEvent event )
+			{
+				ISelection selection = event.getSelection( );
+				if ( selection != null )
+				{
+					Object[] sel = ( (IStructuredSelection) selection ).toArray( );
+					if ( sel.length == 1 )
+					{
+						if ( sel[0] instanceof IPropertyDefn )
+						{
+
+							// Save the current expression into the DE
+							// using DE
+							// API
+							DesignElementHandle desHandle = (DesignElementHandle) cmbExprListViewer.getInput( );
+							saveModel( );
+
+							// Update the editor to display the
+							// expression
+							// corresponding to the selected
+							// combo item ( method name/ expression name
+							// )
+							IPropertyDefn elePropDefn = (IPropertyDefn) sel[0];
+							cmbItemLastSelected = elePropDefn;
+
+							setEditorText( desHandle.getStringProperty( elePropDefn.getName( ) ) );
+							selectionMap.put( getModel( ), selection );
+
+							String method = cmbItemLastSelected.getName( );
+
+							updateScriptContext( desHandle, method );
+							updateMethodDescription( method );
+							refreshAll( );
+						}
+					}
+				}
+			}
+
+		} );
+
+		scriptEditor.createPartControl( child );
+		scriptValidator = new ScriptValidator( getViewer( ) );
+
+		// suport the mediator
+		//SessionHandleAdapter.getInstance( ).getMediator( ).addColleague( this );
+
+		disableEditor( );
+
+		SourceViewer viewer = getViewer( );
+		IDocument document = viewer == null ? null : viewer.getDocument( );
+
+		if ( document != null )
+		{
+			IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager( document );
+
+			if ( undoManager != null )
+			{
+				undoManager.addDocumentUndoListener( undoListener );
+			}
+			document.addDocumentListener( documentListener );
+		}
+	}
+
+	/**
+	 * Connect the root to add the listener
+	 * 
+	 * @param root
+	 */
+	public void connectRoot( ModuleHandle root )
+	{
+		if ( root == null )
+		{
+			root = SessionHandleAdapter.getInstance( ).getReportDesignHandle( );
+		}
+
+		SessionHandleAdapter.getInstance( )
+				.getMediator( root )
+				.addColleague( this );
+	}
+	
+	/**
+	 * DisConnect the root to add the listener
+	 * 
+	 * @param root
+	 */
+	public void disConnectRoot( ModuleHandle root )
+	{
+		if ( root == null )
+		{
+			root = SessionHandleAdapter.getInstance( ).getReportDesignHandle( );
+		}
+
+		SessionHandleAdapter.getInstance( )
+				.getMediator( root )
+				.removeColleague( this );
+	}
+	
+	/**
+	 * Sets the status of the text listener.
+	 * 
+	 * @param enabled
+	 *            <code>true</code> if enable, <code>false</code> otherwise.
+	 */
+	private void setTextListenerEnable( boolean enabled )
+	{
+		isTextListenerEnable = enabled;
+	}
+
+	/**
+	 * Get current edit element, not report design model.
+	 * 
+	 * @return
+	 */
+	public Object getModel( )
+	{
+		// return cmbExprListViewer.getInput( );
+		return editObject;
+	}
+
+	/**
+	 * Returns parent editor.
+	 * 
+	 * @return parent editor.
+	 */
+	public IEditorPart getParentEditor( )
+	{
+		return editingDomainEditor;
+	}
+
+	private void updateAnnotationLabel( Object handle )
+	{
+		String name = ProviderFactory.createProvider( handle )
+				.getNodeDisplayName( handle );
+
+		if ( name == null )
+		{
+			ano.setText( "" ); //$NON-NLS-1$
+		}
+		else
+		{
+			ano.setText( name );
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter( Class adapter )
+	{
+		if ( adapter == ActionRegistry.class )
+		{
+			return scriptEditor.getActionRegistry( );
+		}
+		else if ( adapter == PalettePage.class )
+		{
+			if ( cmbExprListViewer != null )
+			{
+				cmbExprListViewer.addSelectionChangedListener( palettePage.getSupport( ) );
+			}
+			
+			palettePage.setViewer( getViewer( ) );
+			return palettePage;
+		}
+
+		if ( adapter == IContentOutlinePage.class )
+		{
+
+			// ( (NonGEFSynchronizerWithMutiPageEditor)
+			// getSelectionSynchronizer( ) ).add( (NonGEFSynchronizer)
+			// outlinePage.getAdapter( NonGEFSynchronizer.class ) );
+
+			// Add JS Editor as a selection listener to Outline view selections.
+			// outlinePage.addSelectionChangedListener( jsEditor );
+			DesignerOutlinePage outlinePage = new DesignerOutlinePage( SessionHandleAdapter.getInstance( )
+					.getReportDesignHandle( ) );
+
+			return outlinePage;
+
+		}
+
+		// return the property sheet page
+		if ( adapter == IPropertySheetPage.class )
+		{
+			ReportPropertySheetPage sheetPage = new ReportPropertySheetPage( SessionHandleAdapter.getInstance( )
+					.getReportDesignHandle( ) );
+			return sheetPage;
+		}
+
+		if ( adapter == DataViewPage.class )
+		{
+			DataViewTreeViewerPage page = new DataViewTreeViewerPage( SessionHandleAdapter.getInstance( )
+					.getReportDesignHandle( ) );
+			return page;
+		}
+
+		if ( adapter == AttributeViewPage.class )
+		{
+			AttributeViewPage page = new AttributeViewPage( );
+			return page;
+		}
+
+		if ( adapter == ITextEditor.class )
+		{
+			return scriptEditor;
+		}
+
+		return super.getAdapter( adapter );
+	}
+
+	protected PropertyHandle getPropertyHandle( )
+	{
+		if ( editObject instanceof DesignElementHandle )
+		{
+			DesignElementHandle desHdl = (DesignElementHandle) editObject;
+			if ( cmbItemLastSelected != null )
+			{
+				return desHdl.getPropertyHandle( cmbItemLastSelected.getName( ) );
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * initEditorLayout - initialize the UI components of the editor
+	 * 
+	 */
+	private Composite initEditorLayout( Composite parent )
+	{
+		// Create the editor parent composite.
+		mainPane = new Composite( parent, SWT.NONE );
+
+		GridLayout layout = new GridLayout( );
+
+		mainPane.setLayout( layout );
+
+		createController( mainPane );
+		createDescriptionPane( mainPane );
+
+		Composite editorPane = new Composite( mainPane, SWT.NONE );
+		GridData layoutData = new GridData( GridData.FILL_HORIZONTAL
+				| GridData.FILL_VERTICAL );
+
+		layout = new GridLayout( );
+		layout.verticalSpacing = 0;
+		layout.marginHeight = 0;
+		editorPane.setLayout( layout );
+		editorPane.setLayoutData( layoutData );
+
+		final Composite sep = new Composite( editorPane, SWT.NONE );
+
+		layoutData = new GridData( GridData.FILL_HORIZONTAL );
+		layoutData.heightHint = 1;
+		sep.setLayoutData( layoutData );
+		sep.addPaintListener( new PaintListener( ) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.PaintListener#paintControl(org.eclipse
+			 * .swt.events.PaintEvent)
+			 */
+			public void paintControl( PaintEvent e )
+			{
+				GC gc = e.gc;
+				Rectangle rect = sep.getBounds( );
+				gc.setForeground( ReportColorConstants.DarkGrayForground );
+				gc.drawLine( 0, 0, rect.width, 0 );
+			}
+		} );
+
+		// Create the code editor pane.
+		Composite jsEditorContainer = new Composite( editorPane, SWT.NONE );
+
+		layoutData = new GridData( GridData.FILL_HORIZONTAL
+				| GridData.FILL_VERTICAL );
+
+		jsEditorContainer.setLayoutData( layoutData );
+		jsEditorContainer.setLayout( new FillLayout( ) );
+
+		return jsEditorContainer;
+	}
+
+	/**
+	 * Creates tool bar pane.
+	 * 
+	 * @param parent
+	 *            the parent of controller
+	 */
+	private void createController( Composite parent )
+	{
+		Composite barPane = new Composite( parent, SWT.NONE );
+		GridLayout layout = new GridLayout( 8, false );
+		layout.verticalSpacing = 0;
+		layout.marginHeight = 0;
+		GridData gdata = new GridData( GridData.FILL_HORIZONTAL );
+
+		barPane.setLayout( layout );
+		barPane.setLayoutData( gdata );
+
+		initScriptLabel( barPane );
+		initComboBoxes( barPane );
+
+		Composite toolPane = new Composite( barPane, SWT.NONE );
+		layout = new GridLayout( 3, false );
+		layout.verticalSpacing = 0;
+		layout.marginHeight = 0;
+		toolPane.setLayout( layout );
+
+		GridData layoutData = new GridData( );
+		layoutData.horizontalIndent = 6;
+		toolPane.setLayoutData( layoutData );
+
+		ToolBar toolBar = new ToolBar( toolPane, SWT.FLAT );
+
+		// Creates Reset button
+		butReset = new ToolItem( toolBar, SWT.NONE );
+		butReset.setImage( ReportPlatformUIImages.getImage( IReportGraphicConstants.ICON_SCRIPT_RESET ) );
+		butReset.setToolTipText( Messages.getString( "JSEditor.Button.Reset" ) ); //$NON-NLS-1$
+		butReset.addSelectionListener( new SelectionAdapter( ) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse
+			 * .swt.events.SelectionEvent)
+			 */
+			public void widgetSelected( SelectionEvent e )
+			{
+				SourceViewer viewer = getViewer( );
+
+				if ( viewer != null )
+				{
+					viewer.getTextWidget( ).setText( "" ); //$NON-NLS-1$
+					refreshAll( );
+					setFocus( );
+				}
+			}
+		} );
+
+		// Creates Help button
+		butHelp = new ToolItem( toolBar, SWT.CHECK );
+		butHelp.setImage( ReportPlatformUIImages.getImage( IReportGraphicConstants.ICON_SCRIPT_HELP ) );
+		butHelp.setToolTipText( Messages.getString( "JSEditor.Button.Help" ) ); //$NON-NLS-1$
+		butHelp.addSelectionListener( new SelectionAdapter( ) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse
+			 * .swt.events.SelectionEvent)
+			 */
+			public void widgetSelected( SelectionEvent e )
+			{
+				refreshAll( );
+			}
+		} );
+
+		validateTool = new ToolBar( toolPane, SWT.FLAT );
+
+		layoutData = new GridData( );
+		validateTool.setLayoutData( layoutData );
+		new ToolItem( validateTool, SWT.SEPARATOR );
+
+		// Creates Validate button
+		butValidate = new ToolItem( validateTool, SWT.NONE );
+		butValidate.setImage( ReportPlatformUIImages.getImage( IReportGraphicConstants.ICON_EXPRESSION_VALIDATE ) );
+		butValidate.setToolTipText( Messages.getString( "JSEditor.Button.Validate" ) ); //$NON-NLS-1$
+		butValidate.addSelectionListener( new SelectionAdapter( ) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse
+			 * .swt.events.SelectionEvent)
+			 */
+			public void widgetSelected( SelectionEvent e )
+			{
+				doValidate( );
+				refreshAll( );
+			}
+		} );
+
+		// Creates Validate icon, default empty.
+		validateIcon = new Label( toolPane, SWT.NULL );
+
+		Label column = new Label( barPane, SWT.SEPARATOR | SWT.VERTICAL );
+		layoutData = new GridData( );
+		layoutData.heightHint = 20;
+		column.setLayoutData( layoutData );
+
+		ano = new Label( barPane, 0 );
+		layoutData = new GridData( GridData.FILL_HORIZONTAL
+				| GridData.VERTICAL_ALIGN_CENTER );
+		ano.setLayoutData( layoutData );
+	}
+
+	/**
+	 * Creates description pane.
+	 * 
+	 * @param parent
+	 *            the parent of controller
+	 */
+	private void createDescriptionPane( Composite parent )
+	{
+		descriptionPane = new Composite( parent, SWT.NONE );
+
+		GridLayout layout = new GridLayout( );
+		GridData layoutData = new GridData( GridData.FILL_HORIZONTAL );
+
+		layout.verticalSpacing = 0;
+		layout.marginHeight = 0;
+		descriptionPane.setLayout( layout );
+		descriptionPane.setLayoutData( layoutData );
+
+		final Composite headerLine = new Composite( descriptionPane, SWT.NONE );
+
+		layoutData = new GridData( GridData.FILL_HORIZONTAL );
+		layoutData.heightHint = 3;
+		headerLine.setLayoutData( layoutData );
+		headerLine.addPaintListener( new PaintListener( ) {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.PaintListener#paintControl(org.eclipse
+			 * .swt.events.PaintEvent)
+			 */
+			public void paintControl( PaintEvent e )
+			{
+				GC gc = e.gc;
+				Rectangle rect = headerLine.getBounds( );
+				gc.setForeground( ReportColorConstants.DarkShadowLineColor );
+				gc.drawLine( 0, 0, rect.width, 0 );
+			}
+		} );
+
+		// Creates the label of script description
+		layoutData = new GridData( GridData.FILL_HORIZONTAL );
+		descriptionText = new Text( descriptionPane, SWT.WRAP | SWT.READ_ONLY );
+		descriptionText.setLayoutData( layoutData );
+	}
+
+	/**
+	 * Hides validate button & icon.
+	 */
+	protected void hideValidateButtonIcon( )
+	{
+		hideControl( validateTool );
+		refreshAll( );
+	}
+
+	/**
+	 * Hides a control from its parent composite.
+	 * 
+	 * @param control
+	 *            the control to hide
+	 */
+	private void hideControl( Control control )
+	{
+		if ( control == null )
+		{
+			return;
+		}
+
+		Object layoutData = control.getLayoutData( );
+
+		if ( layoutData == null )
+		{
+			layoutData = new GridData( );
+			control.setLayoutData( layoutData );
+		}
+
+		if ( layoutData instanceof GridData )
+		{
+			GridData gridData = (GridData) layoutData;
+
+			gridData.exclude = true;
+			control.setLayoutData( gridData );
+			control.setVisible( false );
+		}
+	}
+
+	/**
+	 * Shows a control from its parent composite.
+	 * 
+	 * @param control
+	 *            the control to show
+	 */
+	private void showControl( Control control )
+	{
+		if ( control == null )
+		{
+			return;
+		}
+
+		Object layoutData = control.getLayoutData( );
+
+		if ( layoutData == null )
+		{
+			layoutData = new GridData( );
+			control.setLayoutData( layoutData );
+		}
+
+		if ( layoutData instanceof GridData )
+		{
+			GridData gridData = (GridData) layoutData;
+
+			gridData.exclude = false;
+			control.setLayoutData( gridData );
+			control.setVisible( true );
+		}
+	}
+
+	/**
+	 * Refreshes all components in main pane.
+	 */
+	private void refreshAll( )
+	{
+		if ( butHelp != null && !butHelp.getSelection( ) )
+		{
+			hideControl( descriptionPane );
+		}
+		else
+		{
+			showControl( descriptionPane );
+		}
+
+		if ( validateTool == null
+				|| butValidate == null
+				|| !validateTool.isVisible( )
+				|| !butValidate.getEnabled( ) )
+		{
+			hideControl( validateIcon );
+		}
+		else
+		{
+			showControl( validateIcon );
+		}
+
+		if ( mainPane != null )
+		{
+			mainPane.layout( true, true );
+		}
+	}
+
+	private void initScriptLabel( Composite parent )
+	{
+		Label lblScript = new Label( parent, SWT.NONE );
+		lblScript.setText( Messages.getString( "JSEditor.Label.Script" ) ); //$NON-NLS-1$
+		final FontData fd = lblScript.getFont( ).getFontData( )[0];
+		Font labelFont = FontManager.getFont( fd.getName( ),
+				fd.getHeight( ),
+				SWT.BOLD );
+		lblScript.setFont( labelFont );
+		GridData layoutData = new GridData( SWT.BEGINNING );
+		lblScript.setLayoutData( layoutData );
+
+	}
+
+	private void initComboBoxes( Composite parent )
+	{
+
+		// Create the script combo box
+		cmbExpList = new Combo( parent, SWT.READ_ONLY );
+		GridData layoutData = new GridData( GridData.BEGINNING );
+		layoutData.widthHint = 140;
+		cmbExpList.setLayoutData( layoutData );
+		cmbExpList.setVisibleItemCount( 30 );
+		// Create the subfunction combo box
+		cmbSubFunctions = new TextCombo( parent, SWT.NONE );// SWT.DROP_DOWN |
+		// SWT.READ_ONLY );
+		layoutData = new GridData( GridData.BEGINNING );
+		layoutData.widthHint = 180;
+		cmbSubFunctions.setLayoutData( layoutData );
+	}
+
+	/*
+	 * SelectionChanged. - Selection listener implementation for changes in
+	 * other views Selection of elements in other views, triggers this event. -
+	 * The code editor view is updated to show the methods corresponding to the
+	 * selected element.
+	 */
+	public void handleSelectionChanged( SelectionChangedEvent event )
+	{
+		ISelection selection = event.getSelection( );
+		handleSelectionChanged( selection );
+	}
+
+	public void handleSelectionChanged( ISelection selection )
+	{
+
+		if ( editorUIEnabled == true )
+		{
+			saveModel( );
+		}
+
+		if ( selection != null )
+		{
+			Object[] sel = ( (IStructuredSelection) selection ).toArray( );
+
+			IElementPropertyDefn targetMethod = null;
+
+			if ( sel.length == 1 )
+			{
+				editObject = sel[0];
+				if ( sel[0] instanceof ScriptElementNode )
+				{
+					editObject = ( (ScriptElementNode) editObject ).getParent( );
+				}
+				else if ( sel[0] instanceof ScriptObjectNode )
+				{
+					editObject = ( (ScriptObjectNode) editObject ).getParent( );
+				}
+
+				if ( editObject instanceof PropertyHandle )
+				{
+					targetMethod = ( (PropertyHandle) editObject ).getPropertyDefn( );
+
+					// check if this is a method property
+					if ( targetMethod.getMethodInfo( ) != null )
+					{
+						editObject = ( (PropertyHandle) editObject ).getElementHandle( );
+					}
+				}
+			}
+
+			if ( editObject instanceof DesignElementHandle )
+			{
+				// set the combo viewer input to the the selected element.
+				palettePage.getSupport( ).setCurrentEditObject( editObject );
+
+				setComboViewerInput( editObject );
+
+				// clear the latest selected item.
+				cmbItemLastSelected = null;
+
+				setEditorText( "" ); //$NON-NLS-1$
+
+				// enable/disable editor based on the items in the
+				// expression list.
+				if ( cmbExpList.getItemCount( ) > 0 )
+				{
+					enableEditor( );
+
+					if ( targetMethod != null )
+					{
+						selectItemInComboExpList( new StructuredSelection( targetMethod ) );
+					}
+					else
+					{
+						// Selects the last saveed or first item in the
+						// expression list.
+						selectItemInComboExpList( (ISelection) selectionMap.get( getModel( ) ) );
+					}
+				}
+				else
+				{
+					disableEditor( );
+				}
+
+				/*
+				 * if ( editObject instanceof ExtendedItemHandle ) {
+				 * setEditorText( ( (ExtendedItemHandle) editObject
+				 * ).getExternalScript( ) ); context.setVariable( "this",
+				 * "org.eclipse.birt.report.model.api.ExtendedItemHandle" );
+				 * //$NON-NLS-1$ //$NON-NLS-2$ }
+				 */
+				checkDirty( );
+				palettePage.getSupport( ).updateParametersTree( );
+			}
+			else
+			{
+				disableEditor( );
+				cmbExpList.removeAll( );
+				cmbSubFunctions.setItems( null );
+				cmbItemLastSelected = null;
+				palettePage.getSupport( ).setCurrentEditObject( null );
+			}
+			if ( sel.length > 0 )
+			{
+				updateAnnotationLabel( sel[0] );
+			}
+		}
+	}
+
+	private void checkDirty( )
+	{
+		// ( (AbstractMultiPageLayoutEditor) editingDomainEditor ).checkDirty(
+		// );
+	}
+
+	private void selectItemInComboExpList( ISelection selection )
+	{
+		ISelection sel = selection;
+		if ( sel.isEmpty( ) && cmbExpList.getItemCount( ) > 0 )
+		{
+			IPropertyDefn propDefn = (IPropertyDefn) cmbExprListViewer.getElementAt( 0 );
+			if ( propDefn != null )
+			{
+				sel = new StructuredSelection( propDefn );
+			}
+		}
+
+		cmbExprListViewer.setSelection( getNewSelection( sel ) );
+		return;
+	}
+
+	private ISelection getNewSelection( ISelection selection )
+	{
+
+		if ( !( getModel( ) instanceof DesignElementHandle ) )
+		{
+			return selection;
+		}
+
+		//DesignElementHandle model = (DesignElementHandle) getModel( );
+		if ( !( selection instanceof IStructuredSelection ) )
+		{
+			return selection;
+		}
+		List temp = new ArrayList( );
+		List list = ( (IStructuredSelection) selection ).toList( );
+		for ( int i = 0; i < list.size( ); i++ )
+		{
+			if ( list.get( i ) instanceof IElementPropertyDefn )
+			{
+				String name = ( (IElementPropertyDefn) list.get( i ) ).getName( );
+				Object obj = findData( name );
+				if ( obj != null )
+				{
+					temp.add( obj );
+				}
+				else
+				{
+					temp.add( list.get( i ) );
+				}
+			}
+			else
+			{
+				temp.add( list.get( i ) );
+			}
+		}
+
+		return new StructuredSelection( temp );
+	}
+
+	private Object findData( String name )
+	{
+		if ( cmbExprListViewer.getCombo( ).getItemCount( ) <= 0 )
+		{
+			return null;
+		}
+		// cmbExprListViewer.get
+		int count = cmbExprListViewer.getCombo( ).getItemCount( );
+		for ( int i = 0; i < count; i++ )
+		{
+			Object obj = cmbExprListViewer.getElementAt( i );
+			if ( obj instanceof IElementPropertyDefn
+					&& ( (IElementPropertyDefn) obj ).getName( ).equals( name ) )
+			{
+				return obj;
+			}
+		}
+		return null;
+	}
+
+	// /**
+	// * selectItemInComboExpList - selects the specified input item in the
+	// * expList - if input is null selects first item.
+	// */
+	// private void selectItemInComboExpList( IPropertyDefn propDefn )
+	// {
+	// if ( propDefn == null )
+	// {
+	// if ( cmbExpList.getItemCount( ) > 0 )
+	// propDefn = (IPropertyDefn) this.cmbExprListViewer
+	// .getElementAt( 0 );
+	// }
+	//
+	// if ( propDefn != null )
+	// selectItemInComboExpList( new StructuredSelection( propDefn ) );
+	//
+	// }
+
+	/**
+	 * setEditorText - sets the editor content.
+	 * 
+	 * @param text
+	 */
+	protected void setEditorText( String text )
+	{
+		if ( scriptEditor == null )
+		{
+			return;
+		}
+
+		try
+		{
+			// Disable text listener during setting script, so that the dirty
+			// flag isn't changed by program.
+			setTextListenerEnable( false );
+			scriptEditor.setScript( text );
+			if ( scriptValidator != null )
+			{
+				scriptValidator.init( );
+				setValidateIcon( null, null );
+			}
+		}
+		finally
+		{
+			setTextListenerEnable( true );
+		}
+	}
+
+	/**
+	 * getEditorText() - gets the editor content.
+	 * 
+	 */
+	String getEditorText( )
+	{
+		return scriptEditor.getScript( );
+	}
+
+	/**
+	 * saveEditorContentsDE - saves the current editor contents to ROM using DE
+	 * API
+	 * 
+	 * @param desHdl
+	 * @return true if updated else false.
+	 */
+	private boolean saveEditorContentsDE( DesignElementHandle desHdl,
+			boolean isSaveScript )
+	{
+		if ( desHdl != null && getEditorText( ) != null )
+		{
+			try
+			{
+				if ( cmbItemLastSelected != null )
+				{
+					String name = cmbItemLastSelected.getName( );
+
+					desHdl.setStringProperty( name, getEditorText( ) );
+					if ( !isSaveScript )
+					{
+						setEditorText( desHdl.getStringProperty( name ) );
+					}
+				}
+				selectionMap.put( getModel( ), cmbExprListViewer.getSelection( ) );
+			}
+			catch ( SemanticException e )
+			{
+				ExceptionUtil.handle( e );
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Saves input code to model
+	 */
+	private void saveModel( )
+	{
+		if ( isCodeModified( ) && editObject instanceof DesignElementHandle )
+		{
+			saveEditorContentsDE( (DesignElementHandle) editObject,
+					isSaveScript );
+		}
+
+		setIsModified( false );
+
+		( (IFormPage) getParentEditor( ) ).getEditor( )
+				.editorDirtyStateChanged( );
+
+		firePropertyChange( PROP_DIRTY );
+
+		SourceViewer viewer = getViewer( );
+		IUndoManager undoManager = viewer == null ? null
+				: viewer.getUndoManager( );
+
+		if ( undoManager != null )
+		{
+			undoManager.endCompoundChange( );
+		}
+		cleanPoint = getUndoLevel( );
+	}
+
+	/**
+	 * Returns current undo level.
+	 * 
+	 * @return current undo level.
+	 */
+	private int getUndoLevel( )
+	{
+		SourceViewer viewer = getViewer( );
+		IUndoableOperation[] history = viewer == null ? null
+				: OperationHistoryFactory.getOperationHistory( )
+						.getUndoHistory( new ObjectUndoContext( viewer.getDocument( ) ) );
+
+		return history == null ? -1 : history.length;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setIsModified( boolean b )
+	{
+		isModified = b;
+	}
+
+	private boolean isCodeModified( )
+	{
+		return isModified;
+	}
+
+	protected void markDirty( )
+	{
+		if ( !isModified )
+		{
+			setIsModified( true );
+			( (IFormPage) getParentEditor( ) ).getEditor( )
+					.editorDirtyStateChanged( );
+
+			firePropertyChange( PROP_DIRTY );
+		}
+
+		if ( cleanPoint > getUndoLevel( ) && !undoing )
+		{
+			cleanPoint = -1;
+		}
+	}
+
+	/**
+	 * Enables the editor UI components
+	 */
+	private void enableEditor( )
+	{
+		if ( editorUIEnabled == false )
+		{
+			getViewer( ).getTextWidget( ).setEnabled( true );
+			cmbExpList.setEnabled( true );
+			butReset.setEnabled( true );
+			butValidate.setEnabled( true );
+			editorUIEnabled = true;
+		}
+		setEditorText( "" ); //$NON-NLS-1$
+	}
+
+	/**
+	 * Disables the editor UI components
+	 */
+	private void disableEditor( )
+	{
+		if ( editorUIEnabled == true )
+		{
+			getViewer( ).getTextWidget( ).setEnabled( false );
+			cmbExpList.setEnabled( false );
+			cmbSubFunctions.setEnabled( false );
+			butReset.setEnabled( false );
+			butValidate.setEnabled( false );
+			editorUIEnabled = false;
+		}
+		setEditorText( NO_EXPRESSION );
+	}
+
+	/**
+	 * Gets source viewer in the editor
+	 * 
+	 * @return source viewer
+	 */
+	public SourceViewer getViewer( )
+	{
+		return (SourceViewer) scriptEditor.getViewer( );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.birt.report.designer.core.util.mediator.IColleague#performRequest
+	 * (
+	 * org.eclipse.birt.report.designer.core.util.mediator.request.ReportRequest
+	 * )
+	 */
+	public void performRequest( ReportRequest request )
+	{
+		if ( ReportRequest.SELECTION.equals( request.getType( ) ) )
+		{
+			handleSelectionChange( request.getSelectionModelList( ) );
+		}
+		if ( ReportRequest.CREATE_ELEMENT.equals( request.getType( ) )
+				&& request.getSelectionModelList( ).get( 0 ) instanceof ScriptDataSourceHandle )
+		{
+			handleSelectionChange( request.getSelectionModelList( ) );
+		}
+		refreshAll( );
+	}
+
+	private void setComboViewerInput( Object model )
+	{
+		cmbExprListViewer.setInput( model );
+
+		Object oldSelection = selectionMap.get( model );
+
+		if ( oldSelection == null )
+		{
+			selectItemInComboExpList( new StructuredSelection( ) );
+		}
+		else
+		{
+			selectItemInComboExpList( (ISelection) oldSelection );
+		}
+
+		cmbSubFunctionsViewer.setInput( model );
+		int itemCount = cmbSubFunctions.getItemCount( );
+		if ( itemCount > 0 )
+		{
+			cmbSubFunctions.select( 0 ); // select first element always
+		}
+		cmbSubFunctions.setEnabled( itemCount > 0 );
+		return;
+	}
+
+	private void setComboViewerInput( String message )
+	{
+		cmbExprListViewer.setInput( message );
+		return;
+	}
+
+	/**
+	 * Reset the selection forcely.
+	 * 
+	 * @param list
+	 */
+	public void handleSelectionChange( List list )
+	{
+		if ( scriptEditor instanceof AbstractTextEditor )
+		{
+			SelectionChangedEvent event = new SelectionChangedEvent( ( (AbstractTextEditor) scriptEditor ).getSelectionProvider( ),
+					new StructuredSelection( list ) );
+
+			handleSelectionChanged( event );
+		}
+	}
+
+	/**
+	 * Returns the current script editor.
+	 * 
+	 * @return the current script editor.
+	 */
+	protected IScriptEditor getScriptEditor( )
+	{
+		return scriptEditor;
+	}
+
+	/**
+	 * Validates the contents of this editor.
+	 */
+	public void doValidate( )
+	{
+		Image image = null;
+		String message = null;
+
+		if ( scriptValidator == null )
+		{
+			return;
+		}
+
+		try
+		{
+			scriptValidator.validate( true, true );
+			image = ReportPlatformUIImages.getImage( IReportGraphicConstants.ICON_SCRIPT_NOERROR );
+			message = Messages.getString( "JSEditor.Validate.NoError" ); //$NON-NLS-1$
+		}
+		catch ( ParseException e )
+		{
+			image = ReportPlatformUIImages.getImage( IReportGraphicConstants.ICON_SCRIPT_ERROR );
+			message = e.getLocalizedMessage( );
+		}
+		finally
+		{
+			setValidateIcon( image, message );
+			setFocus( );
+		}
+	}
+
+	/**
+	 * Sets the validate icon with the specified image and tool tip text.
+	 * 
+	 * 
+	 * @param image
+	 *            the icon image
+	 * @param tip
+	 *            the tool tip text
+	 */
+	private void setValidateIcon( Image image, String tip )
+	{
+		if ( validateIcon != null )
+		{
+			validateIcon.setImage( image );
+			validateIcon.setToolTipText( tip );
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+	 */
+	public void doSaveAs( )
+	{
+		scriptEditor.doSaveAs( );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
+	 * org.eclipse.ui.IEditorInput)
+	 */
+	public void init( IEditorSite site, IEditorInput input )
+			throws PartInitException
+	{
+		setSite( site );
+		setInput( input );
+		scriptEditor.init( site, input );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+	 */
+	public void setFocus( )
+	{
+		scriptEditor.setFocus( );
+	}
+
+	/**
+	 * 
+	 */
+	public void resetText( )
+	{
+		if ( editObject instanceof DesignElementHandle
+				&& cmbItemLastSelected != null )
+		{
+			DesignElementHandle desHdl = (DesignElementHandle) editObject;
+			String name = cmbItemLastSelected.getName( );
+
+			setEditorText( desHdl.getStringProperty( name ) );
+		}
+	}
+
+	/**
+	 * Updates the description label with the specified method name.
+	 * 
+	 * @param methodName
+	 *            the method to update.
+	 */
+	private void updateMethodDescription( String methodName )
+	{
+		Object obj = findData( methodName );
+		String description = null;
+
+		if ( obj instanceof IElementPropertyDefn )
+		{
+			IMethodInfo methodInfo = ( (IElementPropertyDefn) obj ).getMethodInfo( );
+
+			if ( methodInfo != null )
+			{
+				description = methodInfo.getToolTip( );
+			}
+		}
+		setDescriptionText( description );
+	}
+
+	/**
+	 * Sets the description with the specified text.
+	 * 
+	 * @param text
+	 *            the text to set.
+	 */
+	private void setDescriptionText( String text )
+	{
+		Font font = descriptionText.getFont( );
+		FontData[] fontData = font.getFontData( );
+		String description;
+
+		if ( text != null && text.length( ) > 0 )
+		{
+			for ( int i = 0; i < fontData.length; i++ )
+			{
+				fontData[i].setStyle( fontData[i].getStyle( ) & ~SWT.ITALIC );
+			}
+			description = text;
+		}
+		else
+		{
+			for ( int i = 0; i < fontData.length; i++ )
+			{
+				fontData[i].setStyle( fontData[i].getStyle( ) | SWT.ITALIC );
+			}
+			description = Messages.getString( "JSEditor.Text.NoDescription" ); //$NON-NLS-1$;
+		}
+		descriptionText.setFont( new Font( font.getDevice( ), fontData ) );
+		descriptionText.setText( description );
+	}
+}
+
+/**
+ * class JSExpListProvider - Is the content and label provider for the
+ * expression list
+ * 
+ */
+
+class JSExpListProvider implements IStructuredContentProvider, ILabelProvider
+{
+
+	private static final String NO_TEXT = Messages.getString( "JSEditor.Text.NoText" ); //$NON-NLS-1$;
+
+	public Object[] getElements( Object inputElement )
+	{
+		if ( inputElement instanceof DesignElementHandle )
+		{
+			DesignElementHandle eleHandle = (DesignElementHandle) inputElement;
+
+			List methods = eleHandle.getMethods( );
+
+			if ( methods != null )
+			{
+				return methods.toArray( new Object[methods.size( )] );
+			}
+		}
+		return new Object[]{};
+	}
+
+	public void dispose( )
+	{
+
+	}
+
+	public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
+	{
+		viewer.refresh( );
+
+	}
+
+	public String getText( Object element )
+	{
+		if ( element instanceof IPropertyDefn )
+		{
+			IPropertyDefn eleDef = (IPropertyDefn) element;
+			return eleDef.getName( );
+		}
+		return NO_TEXT;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
+	 */
+	public Image getImage( Object element )
+	{
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.
+	 * jface.viewers.ILabelProviderListener)
+	 */
+	public void addListener( ILabelProviderListener listener )
+	{
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang
+	 * .Object, java.lang.String)
+	 */
+	public boolean isLabelProperty( Object element, String property )
+	{
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse
+	 * .jface.viewers.ILabelProviderListener)
+	 */
+	public void removeListener( ILabelProviderListener listener )
+	{
+
+	}
+}
+
+class JSSubFunctionListProvider implements
+		IStructuredContentProvider,
+		ILabelProvider,
+		ISelectionChangedListener
+{
+
+	protected static Logger logger = Logger.getLogger( JSSubFunctionListProvider.class.getName( ) );
+
+	// private static final String NO_TEXT = Messages.getString(
+	// "JSEditor.Text.NoText" ); //$NON-NLS-1$;
+	private JSEditor editor;
+
+	public JSSubFunctionListProvider( JSEditor editor )
+	{
+		this.editor = editor;
+	}
+
+	public Object[] getElements( Object inputElement )
+	{
+		List elements = new ArrayList( );
+
+		if ( inputElement instanceof ExtendedItemHandle )
+		{
+			int selectedIndex = editor.cmbExpList.getSelectionIndex( );
+			if ( selectedIndex >= 0 )
+			{
+				String scriptName = editor.cmbExpList.getItem( editor.cmbExpList.getSelectionIndex( ) );
+
+				ExtendedItemHandle extHandle = (ExtendedItemHandle) inputElement;
+				List methods = extHandle.getMethods( scriptName );
+
+				if ( methods != null && methods.size( ) > 0 )
+				{
+					elements.add( 0,
+							Messages.getString( "JSEditor.cmb.NewEventFunction" ) ); //$NON-NLS-1$
+					elements.addAll( methods );
+				}
+			}
+		}
+
+		return elements.toArray( );
+	}
+
+	public void dispose( )
+	{
+	}
+
+	public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
+	{
+		if ( newInput != null )
+			viewer.refresh( );
+
+	}
+
+	public Image getImage( Object element )
+	{
+		return null;
+	}
+
+	public String getText( Object element )
+	{
+		if ( element instanceof IMethodInfo )
+		{
+			IMethodInfo eleDef = (IMethodInfo) element;
+			return JSEditor.METHOD_DISPLAY_INDENT + eleDef.getName( );
+		}
+		else if ( element instanceof String )
+		{
+			return (String) element;
+		}
+		return ""; //$NON-NLS-1$
+	}
+
+	public void addListener( ILabelProviderListener listener )
+	{
+	}
+
+	public boolean isLabelProperty( Object element, String property )
+	{
+		return false;
+	}
+
+	public void removeListener( ILabelProviderListener listener )
+	{
+
+	}
+
+	public void selectionChanged( SelectionChangedEvent event )
+	{
+		boolean isContextChange = false;
+
+		if ( event.getSource( ) instanceof ComboViewer )
+		{
+			isContextChange = JSEditor.VIEWER_CATEGORY_CONTEXT.equals( ( (ComboViewer) event.getSource( ) ).getData( JSEditor.VIEWER_CATEGORY_KEY ) );
+		}
+
+		ISelection selection = event.getSelection( );
+		if ( selection != null )
+		{
+			Object[] sel = ( (IStructuredSelection) selection ).toArray( );
+			if ( sel.length == 1 )
+			{
+				if ( isContextChange )
+				{
+					editor.cmbSubFunctionsViewer.refresh( );
+					int itemCount = editor.cmbSubFunctions.getItemCount( );
+					if ( itemCount > 0 )
+					{
+						// select first element always
+						editor.cmbSubFunctions.select( 0 );
+					}
+					editor.cmbSubFunctions.setEnabled( itemCount > 0 );
+				}
+				else
+				{
+					if ( sel[0] instanceof IMethodInfo )
+					{
+						IMethodInfo methodInfo = (IMethodInfo) sel[0];
+
+						Position pos = findMethod( methodInfo );
+
+						if ( pos != null )
+						{
+							// locate to existing method
+							IScriptEditor viewer = editor.getScriptEditor( );
+
+							if ( viewer instanceof AbstractTextEditor )
+							{
+								AbstractTextEditor editor = (AbstractTextEditor) viewer;
+								editor.selectAndReveal( pos.getOffset( ),
+										pos.length );
+							}
+						}
+						else
+						{
+							// create new method
+							String signature = createSignature( methodInfo );
+
+							try
+							{
+								IScriptEditor viewer = editor.getScriptEditor( );
+
+								if ( viewer instanceof AbstractTextEditor )
+								{
+									AbstractTextEditor editor = (AbstractTextEditor) viewer;
+
+									IDocument doc = ( editor.getDocumentProvider( ) ).getDocument( viewer.getEditorInput( ) );
+									int length = doc.getLength( );
+
+									doc.replace( length, 0, signature );
+									editor.selectAndReveal( length + 1,
+											signature.length( ) );
+								}
+							}
+							catch ( BadLocationException e )
+							{
+								logger.log( Level.SEVERE, e.getMessage( ), e );
+							}
+						}
+
+						editor.cmbSubFunctions.select( 0 );
+					}
+				}
+			}
+		}
+	}
+
+	private Position findMethod( IMethodInfo methodInfo )
+	{
+		ScriptParser parser = new ScriptParser( editor.getEditorText( ) );
+
+		Collection coll = parser.getAllMethodInfo( );
+
+		for ( Iterator itr = coll.iterator( ); itr.hasNext( ); )
+		{
+			IScriptMethodInfo mtd = (IScriptMethodInfo) itr.next( );
+
+			if ( methodInfo.getName( ).equals( mtd.getName( ) ) )
+			{
+				return mtd.getPosition( );
+			}
+		}
+
+		return null;
+	}
+
+	// create the signature to insert in the document:
+	// function functionName(param1, param2){}
+	private String createSignature( IMethodInfo info )
+	{
+		StringBuffer signature = new StringBuffer( );
+		String javaDoc = info.getJavaDoc( );
+		if ( javaDoc != null && javaDoc.length( ) > 0 )
+		{
+			signature.append( "\n" ); //$NON-NLS-1$
+			signature.append( info.getJavaDoc( ) );
+		}
+
+		if ( info instanceof ITemplateMethodInfo )
+		{
+			String code = ( (ITemplateMethodInfo) info ).getCodeTemplate( );
+
+			if ( code != null )
+			{
+				signature.append( "\n" ).append( code ).append( "\n" );
+
+				return signature.toString( );
+			}
+		}
+
+		signature.append( "\nfunction " ); //$NON-NLS-1$
+		signature.append( info.getName( ) );
+		signature.append( "( " ); //$NON-NLS-1$
+		Iterator iter = info.argumentListIterator( );
+		if ( iter.hasNext( ) )
+		{
+			// only one iteraration, we ignore overload cases for now
+			// need to do multiple iterations if overloaded methods should be
+			// supported
+
+			IArgumentInfoList argumentList = (IArgumentInfoList) iter.next( );
+			for ( Iterator argumentIter = argumentList.argumentsIterator( ); argumentIter.hasNext( ); )
+			{
+				IArgumentInfo argument = (IArgumentInfo) argumentIter.next( );
+
+				String argName = argument.getName( );
+
+				if ( argName == null || argName.length( ) == 0 )
+				{
+					String type = argument.getType( );
+					// convert type to parameter name
+					argName = JSEditor.convertToParameterName( type );
+				}
+
+				signature.append( argName );
+
+				if ( argumentIter.hasNext( ) )
+				{
+					signature.append( ", " );//$NON-NLS-1$
+				}
+			}
+		}
+		signature.append( " )\n{\n}\n" ); //$NON-NLS-1$
+		return signature.toString( );
+	}
+
+}

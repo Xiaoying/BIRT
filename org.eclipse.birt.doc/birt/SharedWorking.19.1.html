@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <!-- MOTW-DISABLED saved from url=(0014)about:internet -->
+    <title>Building&nbsp;a&nbsp;Shared Report&nbsp;Development Framework</title>
+    <link rel="StyleSheet" href="css/SharedWorking.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="css/webworks.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="webworks.css" type="text/css" media="all" />
+    <script type="text/javascript" language="JavaScript1.2">
+      <!--
+        var  WebWorksRootPath = "";
+      // -->
+    </script>
+  </head>
+  <body class="" style="">
+    <div style="text-align: left;">
+      <table cellspacing="0" summary="">
+        <tr>
+          <td>
+            <a href="multipage.18.4.html"><img src="images/prev.gif" alt="Previous" border="0" /></a>
+          </td>
+          <td>
+            <a href="SharedWorking.19.2.html"><img src="images/next.gif" alt="Next" border="0" /></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <hr align="left" />
+    <blockquote>
+      <h2 class="zTitleChapter"><a name="138074">Building</a>&nbsp;a&nbsp;Shared Report&nbsp;Development Framework </h2>
+      <p class="b_Body"><a name="145151">Previous </a>sections describe how to create and use data sources and data sets and lay out and format report items. A single report developer with a requirement for only a few reports can use these approaches effectively. For a larger project, either one with more developers or one that requires more reports, many designs need to use the same elements or layouts. In these cases, manual techniques are cumbersome. Developing the same components repeatedly wastes time and is prone to errors. Even if you use the copy-and-paste features of BIRT Report Designer, a report design does not provide convenient access to standard elements and layouts.</p>
+      <p class="b1i_Bullet1-intro"><a name="145027">B</a>IRT provides the following solutions for designing reports that must conform to standards, including using common design elements and data sources:</p>
+      <div class="b1_Bullet1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b1_Bullet1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zBullet">n	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b1_Bullet1_inner"><a name="145212">A library</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i_Indent1"><a name="145220">This type of file stores customized report features, such as data sources, </a>data sets, visual report items, styles, and master pages. Use a library in a report design to access the customized report elements. You can use multiple libraries in a single report design. By using multiple libraries, you can separate the styles and functionality that different projects or processes need.</div>
+      <div class="N_i_Indent1"><a name="145263">A library is a dynamic component of a report design. When a library </a>developer makes changes to a library, the report design synchronizes itself with the changed library. In this way, changes propagate easily within a suite of report designs.</div>
+      <div class="b1_Bullet1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b1_Bullet1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zBullet">n	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b1_Bullet1_inner"><a name="145198">A template</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i_Indent1"><a name="145028">This type of file provides a structure for a standard report layout. </a>BIRT Report Designer provides a set of standard templates, such as Simple Listing and Grouped Listing report templates. A template can contain visual report items that appear in the report’s layout, data sources and data sets, and master page layouts. A template can also use one or more libraries in the same way that a report design does.</div>
+      <div class="N_i_Indent1"><a name="145271">A template is a static framework on which to build a new report design. </a>For this reason, a report design can derive from only one template. Additionally, when a template developer changes a template, report designs that are based on that template do not automatically reflect the changes to the template.</div>
+      <div class="b1_Bullet1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b1_Bullet1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zBullet">n	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b1_Bullet1_inner"><a name="209830">A CSS file</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i_Indent1"><a name="210042">This type of file provides styles for formatting items in a report, similar to </a>the formatting of items on a web page. <a href="format.7.1.html#166345" title="Formatting Report Content">Formatting&nbsp;Report Content</a> provides detailed information about using CSS files in BIRT.</div>
+      <h4 class="N_h3_Head3"><a name="247868">Understanding the resource folder</a></h4>
+      <p class="b_Body"><a name="247878">B</a>IRT Report Designer uses the resource folder as a repository for libraries. This folder should be one that all report developers can access, such as a directory on a shared network drive. The location of the resource folder is specified in the Preferences page, which you access by choosing Windows<span style="font-family: &quot;Microsoft Sans Serif&quot;;">&rarr;</span>Preferences from the main menu, then choosing the Report Design Resource item, as shown in <a href="#247890" title="Building a Shared Report Development Framework">Figure&nbsp;19‑1</a>. You can browse to or type the name of your resource folder, then choose OK. BIRT Report Designer then uses this location to display libraries and other resources in Library Explorer.</p>
+      <p class="i1_Image1"><a name="247888"><img class="Default" src="images/ResourceFolderCreation.gif" width="583" height="412" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="" /></a></p>
+      <div class="fc_FigCalloutTitleFirst_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc_FigCalloutTitleFirst_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;19‑1	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc_FigCalloutTitleFirst_inner"><a name="247890">Setting up a resource folder</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="b_Body"><a name="247892">If you have a large number of libraries, you can use subfolders to organize </a>the libraries in a logical way. For example, the \\SharedServer\Resource\General folder can contain the general libraries, and \\SharedServer\Resource\Finance can contain the Finance libraries.</p>
+      <p class="b_Body"><a name="247894">To place a library into the resource folder, you can publish a library from your </a>current workspace or you can add a library from an external location. You can also use standard file system commands to copy your library files to the resource folder. Make sure that your library has a meaningful file name because BIRT Report Designer displays this name to the report developers who use the resource folder.</p>
+      <h4 class="N_ht_HowTo"><a name="247902">How to publish a library from your workspace</a></h4>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247906">Open the library in </a>BIRT Report Designer.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247908">Choose File</a><span style="font-family: &quot;Microsoft Sans Serif&quot;;">&rarr;</span>Place Library in Resource Folder.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247913">On Publish Library, as shown in </a><a href="#247919" title="Building a Shared Report Development Framework">Figure&nbsp;19‑2</a>, make changes to the file name and folder. For example, change the file name of the library if you need to make the name more meaningful. Use Browse if you want to place the library in a subfolder of the resource folder. Choose Finish.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="i1b_Image1-break"><a name="247917">	</a><img class="Default" src="images/PublishLibrary.gif" width="509" height="217" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="" /></p>
+      <div class="fc2_FigCall2Title_outer" style="margin-left: 14.173199999999994pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc2_FigCall2Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;19‑2	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc2_FigCall2Title_inner"><a name="247919">Publishing a library</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247921">On the context menu in Library Explorer, choose Refresh. The new library </a>appears in the list of available libraries.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <h4 class="N_ht_HowTo"><a name="247922">How to add an external library to the resource folder</a></h4>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247927">On the context menu in </a>Library Explorer, choose Add Library.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247929">On Add Library, choose Browse to navigate to and select a library from </a>the file system, as shown in <a href="#247938" title="Building a Shared Report Development Framework">Figure&nbsp;19‑3</a>.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="i2_Image2"><a name="247936"><img class="Default" src="images/AddLibrary.gif" width="509" height="240" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="" /></a></p>
+      <div class="fc2_FigCall2Title_outer" style="margin-left: 14.173199999999994pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc2_FigCall2Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;19‑3	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc2_FigCall2Title_inner"><a name="247938">Adding an external library</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247940">You can also make changes to the file name and folder in the same way as </a>for publishing a library from your workspace. Choose Finish.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="247941">O</a>n the context menu in Library Explorer, choose Refresh. The new library appears in the list of available libraries.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </blockquote>
+    <hr align="left" />
+    <table align="right" summary="">
+      <tr>
+        <td class="WebWorks_Company_Name_Bottom">
+          <a href="notices.html">(c) Copyright Actuate Corporation 2009</a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

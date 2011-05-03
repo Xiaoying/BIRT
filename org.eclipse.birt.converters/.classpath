@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/org.eclipse.birt.report.model"/>
+	<classpathentry sourcepath="/JasperReports-0.6.3/src" kind="lib" path="lib/jasperreports-0.6.3.jar"/>
+	<classpathentry kind="src" path="/org.eclipse.birt.core"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="DataSetInterceptor" name="Data Set Interceptor" schema="schema/DataSetInterceptor.exsd"/>
+   <extension-point id="CubeInterceptor" name="Cube Interceptor" schema="schema/CubeInterceptor.exsd"/>
+     
+     <extension
+         id="DataAdapterFactory"
+         name="DataAdapterFactory"
+         point="org.eclipse.birt.core.FactoryService">
+   		<factory class="org.eclipse.birt.report.data.adapter.impl.DataAdapterFactory"/>
+	 </extension>
+   
+</plugin>

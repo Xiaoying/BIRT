@@ -1,0 +1,170 @@
+%%BeginResource: procset BIRTProcs
+%%Title: Utility procedures
+/rect{
+  3 index 3 -1 roll add 3 1 roll
+  1 index exch sub
+  3 index 2 index moveto
+  2 index 2 index lineto
+  2 index 1 index lineto
+  3 index 1 index lineto
+  3 index 2 index lineto
+  pop pop pop pop
+}def
+/xc 0.2679492 matrix currentmatrix 3 get dup 0 eq{pop}{dup abs div mul}ifelse def
+/italicmatrix [1 0 xc 1 0 0] def
+/RD {string currentfile exch readstring pop} executeonly def
+/rcl{
+  rect closepath eoclip newpath
+}def
+/startItalic{simulateItalic{/ctm matrix currentmatrix def italicmatrix setmatrix ctm concat}if}def
+/endItalic{simulateItalic{ctm setmatrix}if} def
+/drawStrImpl {
+  gsave
+  /simulateItalic exch def
+  5 -2 roll translate
+  0 0 moveto startItalic
+  3 -1 roll 0 8#40
+  5 -1 roll 0 6 -1 roll
+  awidthshow stroke endItalic grestore
+}def
+/drawBStrImpl{
+  gsave
+  /offset exch def
+  /simulateItalic exch def
+  5 -2 roll translate
+  0 0 moveto startItalic
+  3 -1 roll 0 8#40
+  5 -1 roll 0 6 -1 roll
+  6 copy 6 copy 6 copy 6 copy 6 copy
+  gsave offset 0 rmoveto awidthshow stroke grestore
+  gsave offset 2 div 0 rmoveto awidthshow stroke grestore
+  gsave offset offset rmoveto awidthshow stroke grestore
+  gsave 0 offset rmoveto awidthshow stroke grestore
+  gsave 0 offset 2 div rmoveto awidthshow stroke grestore
+  awidthshow stroke endItalic grestore
+}def
+/drawBIStr{
+  true 2 1 roll drawBStrImpl
+}def
+/drawBStr {
+  false 2 1 roll drawBStrImpl
+}def
+/drawSBIStr{
+  true exch 0 0 5 2 roll drawBStrImpl
+}def
+/drawSBStr {
+  false exch 0 0 5 2 roll drawBStrImpl
+}def
+/drawIStr {
+  true drawStrImpl
+}def
+/drawStr {
+  false drawStrImpl
+}def
+/drawSIStr{
+  true 0 0 4 -2 roll drawStrImpl
+}def
+/drawSStr {
+  false 0 0 4 -2 roll drawStrImpl
+}def
+/drawline{
+  gsave
+  5 index setlinewidth
+  6 -2 roll dup dup
+  0 eq not{
+    1 eq{
+      pop [exch dup 3 mul exch 2 mul] 0 setdash
+    }{
+      2 eq{[exch] 0 setdash}if
+    }ifelse
+  }{
+    pop pop pop
+  }ifelse
+  4 -2 roll moveto lineto stroke
+  grestore
+}def
+/usefont{
+  exch findfont exch scalefont setfont
+}def
+/xuidstring <80000000> def
+/curxuid{
+  0 xuidstring { exch 8 bitshift exch add } forall
+}bind def
+/nextxuid{
+  3 -1 0{
+    xuidstring 1 index 2 copy get dup 255 ne{
+      1 add put pop exit
+    }if pop 0 put pop
+  }for
+}bind def
+/AddT42Char{
+  /CIDFont findresource
+  dup
+  /GlyphDirectory get
+	begin
+	  2 index 4 2 roll def
+	end
+	exch /CIDMap get 3 1 roll put
+}def
+/AddT42Glyph{
+  /CIDFont findresource
+  /GlyphDirectory get begin
+    def
+  end
+} def
+/defimg{
+  <</source 6 -1 roll /len 7 -1 roll /width 8 -1 roll /height 9 -1 roll>>def
+}def
+/drawimage{
+  gsave
+  5 dict begin
+    4 index /width get
+    5 index /height get
+    6 -2 roll translate
+    4 -2 roll 1 index 1 index 0 eq exch 0 eq or
+    {pop pop 1 index 1 index}if scale
+    8 2 index 2 index [3 -1 roll 0 0 0 6 -1 roll sub 0 0]
+    5 -1 roll /source get dup resetfile false 3 colorimage
+  end
+  grestore
+}def
+/drawstreamimage {
+  gsave 5 dict begin
+    /pix 2 index 3 mul string def
+    /i 0 def
+    6 -2 roll translate
+    4 -2 roll 1 index 1 index 0 eq exch 0 eq or {
+      pop pop 1 index 1 index}if scale
+    8 2 index 2 index [ 3 -1 roll 0 0 0 6 -1 roll sub 0 0]
+    currentfile /ASCIIHexDecode filter /FlateDecode filter false 3 colorimage
+}def
+/startDefImage{currentfile /ASCIIHexDecode filter /FlateDecode filter /ReusableStreamDecode filter} def
+/endDefImage{<</source 6 -1 roll /width 6 -1 roll /height 7 -1 roll>> def} def
+/Identity-H/CMap resourcestatus
+{
+  pop pop
+}
+{
+  /CIDInit/ProcSet findresource begin
+    12 dict begin
+      begincmap
+        /CIDSystemInfo 3 dict dup begin
+          /Registry(Adobe)def
+          /Ordering(Identity)def
+          /Supplement 0 def
+	    end def
+        /CMapName/Identity-H def
+        /CMapVersion 1.000 def
+        /CMapType 1 def
+        1 begincodespacerange
+          <0000><FFFF>
+        endcodespacerange
+        1 begincidrange
+          <0000><FFFF>0
+        endcidrange
+      endcmap
+      CMapName currentdict/CMap defineresource pop
+    end
+  end
+}
+ifelse

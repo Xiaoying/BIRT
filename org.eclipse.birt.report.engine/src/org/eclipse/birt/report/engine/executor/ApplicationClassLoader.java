@@ -1,0 +1,148 @@
+/*******************************************************************************
+ * Copyright (c)2008, 2009 Actuate Corporation.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *  Actuate Corporation  - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.birt.report.engine.executor;
+
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.eclipse.birt.core.framework.URLClassLoader;
+import org.eclipse.birt.report.engine.api.IReportRunnable;
+import org.eclipse.birt.report.engine.api.impl.ReportEngine;
+import org.eclipse.birt.report.model.api.IResourceLocator;
+import org.eclipse.birt.report.model.api.ModuleHandle;
+import org.eclipse.birt.report.model.api.ScriptLibHandle;
+
+/**
+ * The application class loader.
+ * 
+ * The class loader first try to the load the class as following sequence:
+ * <li>1. standard java class loader,
+ * <li>2. classloader setted through the appContext.
+ * <li>3. CLASSPATH setted by WEBAPP_CLASSPATH_KEY
+ * <li>4. PROJECT_CLASSPATH_KEY
+ * <li>5. WORKSAPCE_CLASSPATH_KEY
+ * <li>6. JARs define in the report design
+ */
+public class ApplicationClassLoader extends ClassLoader
+{
+
+	/**
+	 * the logger
+	 */
+	protected static Logger logger = Logger
+			.getLogger( ApplicationClassLoader.class.getName( ) );
+
+	private URLClassLoader designClassLoader = null;
+	private IReportRunnable runnable;
+	private Map<String, Object> appContext = null;
+
+	private ReportEngine engine;
+
+	public ApplicationClassLoader( ReportEngine engine,
+			IReportRunnable reportRunnable, Map<String, Object> appContext )
+	{
+		this.runnable = reportRunnable;
+		this.engine = engine;
+		this.appContext = appContext;
+	}
+
+	public void close( )
+	{
+		if ( designClassLoader != null )
+		{
+			designClassLoader.close( );
+			designClassLoader = null;
+		}
+	}
+
+	public Class loadClass( String className ) throws ClassNotFoundException
+	{
+		if ( designClassLoader == null )
+		{
+			createDesignClassLoader( );
+		}
+		return designClassLoader.loadClass( className );
+	}
+
+	public URL getResource( String name )
+	{
+		if ( designClassLoader == null )
+		{
+			createDesignClassLoader( );
+		}
+		return designClassLoader.getResource( name );
+	}
+
+	/**
+	 * create the class loader used by the design.
+	 * 
+	 * the method should be synchronized as the class loader of a document may
+	 * be used by multiple tasks.
+	 */
+	protected synchronized void createDesignClassLoader( )
+	{
+		if (designClassLoader != null)
+		{
+			return;
+		}
+		ArrayList<URL> urls = new ArrayList<URL>( );
+		if ( runnable != null )
+		{
+			ModuleHandle module = (ModuleHandle) runnable.getDesignHandle( );
+			Iterator iter = module.scriptLibsIterator( );
+			while ( iter.hasNext( ) )
+			{
+				ScriptLibHandle lib = (ScriptLibHandle) iter.next( );
+				String libPath = lib.getName( );
+				URL url = module.findResource( libPath,
+						IResourceLocator.LIBRARY, appContext );
+				if ( url != null )
+				{
+					urls.add( url );
+				}
+				else
+				{
+					logger.log( Level.SEVERE,
+							"Can not find specified jar: " + libPath ); //$NON-NLS-1$
+				}
+			}
+		}
+		final URL[] jarUrls = (URL[]) urls.toArray( new URL[]{} );
+		if ( engine != null )
+		{
+			designClassLoader = AccessController.doPrivileged( new PrivilegedAction<URLClassLoader>( ) {
+
+				public URLClassLoader run( )
+				{
+					return new URLClassLoader( jarUrls,
+							engine.getEngineClassLoader( ) );
+				}
+			} );
+		}
+		else
+		{
+			designClassLoader = AccessController.doPrivileged( new PrivilegedAction<URLClassLoader>( ) {
+
+				public URLClassLoader run( )
+				{
+					return new URLClassLoader( jarUrls );
+				}
+			} );
+		}
+	}
+}

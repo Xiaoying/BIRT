@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <!-- MOTW-DISABLED saved from url=(0014)about:internet -->
+    <title>How to specify the connection information for a database or other JDBC data&nbsp;source</title>
+    <link rel="StyleSheet" href="css/connecting.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="css/webworks.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="webworks.css" type="text/css" media="all" />
+    <script type="text/javascript" language="JavaScript1.2">
+      <!--
+        var  WebWorksRootPath = "";
+      // -->
+    </script>
+  </head>
+  <body class="" style="">
+    <div style="text-align: left;">
+      <table cellspacing="0" summary="">
+        <tr>
+          <td>
+            <a href="connecting.2.2.html"><img src="images/prev.gif" alt="Previous" border="0" /></a>
+          </td>
+          <td>
+            <a href="connecting.2.4.html"><img src="images/next.gif" alt="Next" border="0" /></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <hr align="left" />
+    <blockquote>
+      <h4 class="N_hth_HowToHelp"><a name="276943">How to specify the connection information for a database or other JDBC </a>data&nbsp;source</h4>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="276950">In Data Explorer, right-click Data Sources, then choose New Data Source.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="191275">On New Data Source, supply the following information:</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="191277">Select JDBC Data Source from the list of data source types.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="266337">In Data Source Name, type a name for the data source. The name must </a>be unique in the current report. <a href="#231195" title="How to specify the connection information for a database or other JDBC data source">Figure&nbsp;2‑2</a> shows a default data source name.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="i3_Image3"><a name="191292"><img class="Default" src="images/new_data_source_new_JDBC.gif" width="514" height="360" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="Figure 2-2 Creating a JDBC data source" /></a></p>
+      <div class="fc3_FigCall3Title_outer" style="margin-left: 28.346400000000002pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc3_FigCall3Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;2‑2	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc3_FigCall3Title_inner"><a name="231195">Creating a JDBC data source</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="231205">Choose Next.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i2_Indent2"><a name="231207">New JDBC Data Source Profile shows connection properties, as shown </a>in <a href="#216722" title="How to specify the connection information for a database or other JDBC data source">Figure&nbsp;2‑3</a>.</div>
+      <p class="i3_Image3"><a name="191303"><img class="Default" src="images/jdbc_new_data_source.gif" width="524" height="404" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="Figure 2-3 Defining JDBC connection information" /></a></p>
+      <div class="fc3_FigCall3Title_outer" style="margin-left: 28.346400000000002pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc3_FigCall3Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;2‑3	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc3_FigCall3Title_inner"><a name="216722">Defining JDBC connection information</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="245396">Specify the connection information for the JDBC data source:</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="245400">In Driver Class, choose a driver class from the drop-down list. If you </a>do not see the driver class that you want to use, add a driver as described later in this section.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="191318">In Database URL, type the database URL, using the syntax that the </a>driver requires. Typically, BIRT Report Designer displays the necessary syntax in Database URL. For a Sun JDBC/ODBC bridge, for example, the syntax is</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="cfi2_CodeFirstIndent2"><a name="191325">jdbc:odbc:&lt;data source name&gt;</a></div>
+      <div class="N_i2_Indent2"><a name="191326">where &lt;data source name&gt; is the name of your data source. For </a>example, the following URL identifies the sales database:</div>
+      <div class="cfi2_CodeFirstIndent2"><a name="191327">jdbc:odbc:sales</a></div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="191329">In User Name, type the user name to use when connecting to the JDBC </a>data source. This field can be left blank if your data source does not require a user name.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="191332">In Password, type the password to use when connecting to the JDBC </a>data source. This field can be left blank if your data source does not require a password.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">5	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="245502">In JNDI URL, type the full path to the connection pooling service, if </a>applicable. The following path is an example:</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="cfi2_CodeFirstIndent2"><a name="260292">java:comp/env/jdbc/MyDataSource</a></div>
+      <div class="N_i2_Indent2"><a name="260296">In the example, MyDataSource is the name of the JNDI database </a>service.</div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="245507">To ensure that the connection information is correct, choose Test </a>Connection. If Test Connection returns an error, repeat the preceding steps to correct the error. Then, test the connection again.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">5	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="191347">Choose Finish. The new JDBC data source appears under Data Sources in </a>Data Explorer.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </blockquote>
+    <hr align="left" />
+    <table align="right" summary="">
+      <tr>
+        <td class="WebWorks_Company_Name_Bottom">
+          <a href="notices.html">(c) Copyright Actuate Corporation 2009</a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+     <extension-point id="aggregation" name="Custom Aggregation Extension" schema="schema/aggregation.exsd"/>
+     
+     <extension
+         id="DataEngineFactory"
+         name="DataEngineFactory"
+         point="org.eclipse.birt.core.FactoryService">
+   		<factory class="org.eclipse.birt.data.engine.impl.DataEngineFactory"/>
+	 </extension>
+   
+</plugin>

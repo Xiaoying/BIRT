@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.22" id="1">
+    <body>
+        <label id="5">
+            <list-property name="userProperties">
+                <structure>
+                    <property name="name">TestProperty</property>
+                    <property name="type">expression</property>
+                    <expression name="default" type="javascript">new Date()</expression>
+                </structure>
+                <structure>
+                    <property name="name">TestProperty_1</property>
+                    <property name="type">xml</property>
+                </structure>
+            </list-property>
+            <xml-property name="TestProperty_1"><![CDATA[value for xml property]]></xml-property>
+        </label>
+    </body>
+</report>

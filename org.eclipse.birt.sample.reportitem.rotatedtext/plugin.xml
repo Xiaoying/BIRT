@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         point="org.eclipse.birt.report.designer.ui.reportitemUI">
+      <reportItemLabelUI class="org.eclipse.birt.sample.reportitem.rotatedtext.RotatedTextLabelUI"/>
+      <model extensionName="RotatedText"/>
+      <palette icon="icons/rotatedtext.jpg"/>
+      <editor
+            showInMasterPage="true"
+            canResize="true"
+            showInDesigner="true"/>
+      <outline icon="icons/rotatedtext.jpg"/>
+      <builder
+            class="org.eclipse.birt.sample.reportitem.rotatedtext.RotatedTextBuilderUI"></builder>
+   </extension>
+   <extension
+         point="org.eclipse.birt.report.model.reportItemModel">
+      <reportItem
+            class="org.eclipse.birt.sample.reportitem.rotatedtext.RotatedTextItemFactoryImpl"
+            extensionName="RotatedText">
+         <property
+               defaultValue="90"
+               type="integer"
+               defaultDisplayName="Rotation Angle"
+               name="rotationAngle"/>
+         <property
+               defaultDisplayName="Display Text"
+               defaultValue="Rotated Text"
+               name="displayText"
+               type="string"/>
+      </reportItem>
+   </extension>
+   <extension
+         point="org.eclipse.birt.report.engine.reportitemPresentation">
+      <reportItem
+            class="org.eclipse.birt.sample.reportitem.rotatedtext.RotatedTextPresentationImpl"
+            name="RotatedText"/>
+   </extension>
+   <extension
+         point="org.eclipse.birt.report.designer.ui.elementAdapters">
+      <adaptable
+            class="org.eclipse.birt.report.model.api.ExtendedItemHandle">
+         <adapter
+               factory="org.eclipse.birt.sample.reportitem.rotatedtext.views.RotatedTextPageGeneratorFactory"
+               id="ReportDesign.AttributeView.RotatedTextPageGenerator"
+               priority="1"
+               singleton="false"
+               type="org.eclipse.birt.report.designer.ui.views.IPageGenerator">
+            <enablement>
+               <test
+                     forcePluginActivation="true"
+                     property="ExtendItemHandle.extensionName"
+                     value="RotatedText">
+               </test>
+            </enablement>
+         </adapter>
+      </adaptable>
+   </extension>
+   <extension
+         point="org.eclipse.birt.report.engine.reportitemGeneration">
+      <reportItem
+            class="org.eclipse.birt.sample.reportitem.rotatedtext.RotatedTextGenerationImpl"
+            name="RotatedText">
+      </reportItem>
+   </extension>
+
+</plugin>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension 
+	 	point="org.eclipse.birt.report.engine.emitters"
+	 	name = "Engine PDF Emitters">
+
+        <emitter
+              class="org.eclipse.birt.report.engine.emitter.pdf.PDFEmitter"
+              format="pdf"
+              pagination="paper-size-pagination"
+              id="org.eclipse.birt.report.engine.emitter.pdf"
+              mimeType="application/pdf"
+              supportedImageFormats="PNG;GIF;JPG;BMP;SVG" />
+  </extension>  
+</plugin>

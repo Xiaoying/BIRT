@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <!-- MOTW-DISABLED saved from url=(0014)about:internet -->
+    <title>How to use a stored procedure to retrieve data from a JDBC data source</title>
+    <link rel="StyleSheet" href="css/retrieving-data.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="css/webworks.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="webworks.css" type="text/css" media="all" />
+    <script type="text/javascript" language="JavaScript1.2">
+      <!--
+        var  WebWorksRootPath = "";
+      // -->
+    </script>
+  </head>
+  <body class="" style="">
+    <div style="text-align: left;">
+      <table cellspacing="0" summary="">
+        <tr>
+          <td>
+            <a href="retrieving-data.3.3.html"><img src="images/prev.gif" alt="Previous" border="0" /></a>
+          </td>
+          <td>
+            <a href="retrieving-data.3.5.html"><img src="images/next.gif" alt="Next" border="0" /></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <hr align="left" />
+    <blockquote>
+      <h4 class="N_hth_HowToHelp"><a name="196227">How to use a stored procedure to retrieve data from a JDBC data source</a></h4>
+      <p class="b_Body"><a name="259150">This procedure assumes you have already created the JDBC data source that </a>this data set uses.</p>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="197372">In Data Explorer, right-click Data Sets, then choose New Data Set.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="224116">On New Data Set, specify the following information: </a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="291525">In</a><span style="font-family: &quot;Microsoft Sans Serif&quot;; font-size: 9.0pt;"> </span>Data Source Selection, select the JDBC data source to use.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="196237">In Data Set Type, select SQL Stored Procedure Query.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="291589">In Data Set Name, type a name for the data set. Choose Next.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i_Indent1"><a name="260024">Query displays a template for executing a stored procedure, as shown in </a><a href="#215128" title="How to use a stored procedure to retrieve data from a JDBC data source">Figure&nbsp;3‑3</a>.</div>
+	  <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="202092">In Available Items, navigate to the stored procedure. Select the stored </a>procedure, and drag it to the text area. The stored procedure name appears at the insertion point. Type the arguments if the stored procedure uses parameters. Figure 3-3 shows a stored procedure selected in Available Items. The stored procedure has three parameters. The text area displays the call statement to run the stored procedure. </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="i2_Image2"><a name="214212"><img class="Default" src="images/edit_data_set_stored_procedure.gif" width="627" height="630" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="Figure 3-3 Displaying stored procedures in a database" /></a></p>
+      <div class="fc2_FigCall2Title_outer" style="margin-left: 14.173199999999994pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc2_FigCall2Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;3‑3	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc2_FigCall2Title_inner"><a name="215128">Displaying stored procedures in a database</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+     
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="196279">Choose Finish to save the data set.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </blockquote>
+    <hr align="left" />
+    <table align="right" summary="">
+      <tr>
+        <td class="WebWorks_Company_Name_Bottom">
+          <a href="notices.html">(c) Copyright Actuate Corporation 2009</a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

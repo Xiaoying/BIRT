@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.birt.report.engine" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.birt.report.engine" id="reportItemPreparation" name="Extended Item Preparation Support"/>
+      </appinfo>
+      <documentation>
+         This extension point specifies how the extended report item prepares its nested report elements. In a server environment, the plugin registry uses this extension point registration to discover supported report item extensions.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="reportItem"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="reportItem">
+      <complexType>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  name of the extension item, such as &quot;chart&quot; for chart.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  class that implements IReportItemPreparation
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.birt.report.engine.extension.IReportItemPreparation"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         2.3
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is a sample usage of the reportItemPrepare extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.birt.report.engine.reportItemPreparation&quot; 
+name=&quot;chart prepare extension&quot;&gt;
+  &lt;reportItem name=&quot;org.eclipse.birt.chart&quot;    
+  class=&quot;an event hanndler implementation from org.eclipse.birt.report.engine.extension.IReportItemPreparation&quot; /&gt;
+ &lt;/extension&gt;
+ &lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2008 Actuate Corporation. All rights reserved. This program and 
+the accompanying materials are made available under the terms of the Eclipse 
+Public License v1.0 which accompanies this distribution, and is available at 
+http://www.eclipse.org/legal/epl-v10.html&lt;br&gt;&lt;br&gt;
+
+Contributors: Actuate Corporation - initial API and implementation
+      </documentation>
+   </annotation>
+
+</schema>

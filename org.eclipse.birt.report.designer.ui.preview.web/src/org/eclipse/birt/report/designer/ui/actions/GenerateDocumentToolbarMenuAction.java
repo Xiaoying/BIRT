@@ -1,0 +1,110 @@
+/*******************************************************************************
+ * Copyright (c) 2004 Actuate Corporation.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *  Actuate Corporation  - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.birt.report.designer.ui.actions;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.birt.report.designer.core.model.SessionHandleAdapter;
+import org.eclipse.birt.report.designer.internal.ui.util.UIUtil;
+import org.eclipse.birt.report.designer.ui.ReportPlugin;
+import org.eclipse.birt.report.designer.ui.editors.MultiPageReportEditor;
+import org.eclipse.birt.report.designer.ui.preview.IPreviewConstants;
+import org.eclipse.birt.report.designer.ui.views.ElementAdapterManager;
+import org.eclipse.birt.report.model.api.ModuleHandle;
+import org.eclipse.birt.report.viewer.utilities.WebViewer;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.forms.editor.FormEditor;
+
+/**
+ * GenerateDocumentToolbarMenuAction
+ */
+public class GenerateDocumentToolbarMenuAction implements
+		IWorkbenchWindowActionDelegate
+{
+
+	public void dispose( )
+	{
+	}
+
+	public void init( IWorkbenchWindow window )
+	{
+	}
+
+	public void run( IAction action )
+	{
+		gendoc( action );
+	}
+
+	public void selectionChanged( IAction action, ISelection selection )
+	{
+	}
+
+	private void gendoc( IAction action )
+	{
+		// cleanup system settings
+		System.clearProperty( IPreviewConstants.SID );
+		System.clearProperty( IPreviewConstants.DSID );
+		System.clearProperty( IPreviewConstants.MAX_DATASET_ROWS );
+		System.clearProperty( IPreviewConstants.MAX_CUBE_ROW_LEVELS );
+		System.clearProperty( IPreviewConstants.MAX_CUBE_COLUMN_LEVELS );
+
+		FormEditor editor = UIUtil.getActiveReportEditor( false );
+		ModuleHandle model = null;
+		if (model == null )
+		{
+			if (editor instanceof MultiPageReportEditor)
+			{
+				model = ((MultiPageReportEditor)editor).getModel( );
+			}
+		}
+		if (model == null)
+		{
+			return;
+		}
+		if ( editor != null )
+		{
+			if ( model.needsSave( ) )
+			{
+				editor.doSave( null );
+			}
+		}
+
+		Map options = new HashMap( );
+		options.put( WebViewer.RESOURCE_FOLDER_KEY, ReportPlugin.getDefault( )
+				.getResourceFolder( ) );
+		options.put( WebViewer.SERVLET_NAME_KEY, WebViewer.VIEWER_DOCUMENT );
+
+		Object adapter = ElementAdapterManager.getAdapter( action,
+				IPreviewAction.class );
+
+		if ( adapter instanceof IPreviewAction )
+		{
+			IPreviewAction delegate = (IPreviewAction) adapter;
+
+			delegate.setProperty( IPreviewConstants.REPORT_PREVIEW_OPTIONS,
+					options );
+			delegate.setProperty( IPreviewConstants.REPORT_FILE_PATH,
+					model.getFileName( ) );
+
+			delegate.run( );
+
+			return;
+		}
+
+		WebViewer.display( model.getFileName( ), options );
+	}
+
+}

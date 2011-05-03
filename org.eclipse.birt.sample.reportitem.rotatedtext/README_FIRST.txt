@@ -1,0 +1,1 @@
+This sample plugin is out of date and deprecated. Please refer to the new tutorial projects under "/source/tutorials" directory.

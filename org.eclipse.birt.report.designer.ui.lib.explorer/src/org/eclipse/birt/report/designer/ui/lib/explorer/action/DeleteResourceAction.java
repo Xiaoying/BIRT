@@ -1,0 +1,89 @@
+/*******************************************************************************
+ * Copyright (c) 2004-2008 Actuate Corporation.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *  Actuate Corporation  - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.birt.report.designer.ui.lib.explorer.action;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.birt.report.designer.nls.Messages;
+import org.eclipse.birt.report.designer.ui.lib.explorer.LibraryExplorerTreeViewPage;
+import org.eclipse.birt.report.designer.ui.util.ExceptionUtil;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+
+/**
+ * The action class for removing resources in resource explorer.
+ */
+public class DeleteResourceAction extends ResourceAction
+{
+
+	/**
+	 * Constructs an action for removing resource.
+	 * 
+	 * @param page
+	 *            the resource explorer page
+	 */
+	public DeleteResourceAction( LibraryExplorerTreeViewPage page )
+	{
+		super( Messages.getString( "DeleteLibraryAction.Text" ), page ); //$NON-NLS-1$
+		setId( ActionFactory.DELETE.getId( ) );
+		setAccelerator( SWT.DEL );
+
+		setImageDescriptor( PlatformUI.getWorkbench( )
+				.getSharedImages( )
+				.getImageDescriptor( ISharedImages.IMG_TOOL_DELETE ) );
+
+		setDisabledImageDescriptor( PlatformUI.getWorkbench( )
+				.getSharedImages( )
+				.getImageDescriptor( ISharedImages.IMG_TOOL_DELETE_DISABLED ) );
+	}
+
+	@Override
+	public boolean isEnabled( )
+	{
+		return canModifySelectedResources( );
+	}
+
+	@Override
+	public void run( )
+	{
+		if ( !MessageDialog.openQuestion( getShell( ),
+				Messages.getString( "DeleteResourceAction.Dialog.Title" ), //$NON-NLS-1$
+				Messages.getString( "DeleteResourceAction.Dialog.Message" ) ) ) //$NON-NLS-1$
+		{
+			return;
+		}
+
+		try
+		{
+			new ProgressMonitorDialog( getShell( ) ).run( true,
+					true,
+					createDeleteRunnable( getSelectedFiles( )) );
+		}
+		catch ( InvocationTargetException e )
+		{
+			ExceptionUtil.handle( e );
+		}
+		catch ( InterruptedException e )
+		{
+			ExceptionUtil.handle( e );
+		}
+		catch ( IOException e )
+		{
+			ExceptionUtil.handle( e );
+		}
+	}
+}

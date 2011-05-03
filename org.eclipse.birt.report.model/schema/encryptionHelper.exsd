@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.birt.report.model">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.birt.report.model" id="encryptionHelper" name="BIRT Encryption Helper Extension Point"/>
+      </appInfo>
+      <documentation>
+         This extension point is used to support the custom encryption.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <documentation>
+            (no description available)
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="encryptionHelper"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="encryptionHelper">
+      <annotation>
+         <documentation>
+            (no description available)
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The qualified name of the class which implement the interface IEncryptionHelper.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="extensionName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Internal unique name of the extension
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="isDefault" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Field indicating that whether this encryption extension is the default for all encryptable property.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+&lt;pre&gt;
+&lt;extension
+         point=&quot;org.eclipse.birt.report.model.encryptionHelper&quot;&gt;
+      &lt;encryptionHelper
+            class=&quot;org.eclipse.test.encryptionHelper1&quot;
+            extensionName=&quot;org.eclipse.test.encryptionHelper1&quot;/&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The encryption helper must implement the interface IEncryptionHelper defined in the org.eclipse.birt.report.model.api.extension package. See the package&apos;s JavaDoc documentation and API interfaces for more information.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         None
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005 Actuate Corporation. All rights reserved. This program and 
+the accompanying materials are made available under the terms of the Eclipse 
+Public License v1.0 which accompanies this distribution, and is available at 
+http://www.eclipse.org/legal/epl-v10.html
+
+Contributors: Actuate Corporation - initial API and implementation
+      </documentation>
+   </annotation>
+
+</schema>

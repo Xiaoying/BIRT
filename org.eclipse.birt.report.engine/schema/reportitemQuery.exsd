@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.birt.report.engine">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.birt.report.engine" id="reportitemQuery" name="Extended Item Data Prepare-Time Support"/>
+      </appInfo>
+      <documentation>
+         This extension point specifies how the data that the new report item needs should be prepared. In a server environment, the plugin registry uses this extension point registration to discover supported report item extensions.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="reportItem"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="reportItem">
+      <complexType>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  name of the extension item, such as &quot;chart&quot; for chart.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  class which implements IReportItemQuery
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="getAllRows" type="boolean">
+            <annotation>
+               <documentation>
+                  getAllRows only applies when an ExtendedItem does not have a dataset defined, and the ReportItem is sharing data with its container. True means rowSet contains all rows, while false means rowSet contains only one row.
+
+
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is a sample usage of the reportItemQUery extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.birt.report.engine.reportitemquery&quot; 
+name=&quot;chart report query extension&quot;&gt;
+  &lt;reportItem name=&quot;org.eclipse.birt.chart&quot; class=&quot;org.eclipse.birt.report.chartitem.ChartQuery&quot;/&gt;
+ &lt;/extension&gt;
+ &lt;/pre&gt;
+ &lt;p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The value of the class attribute must be the fully qualified name of a class that implements &lt;code&gt;org.eclipse.birt.engine.extension.IReportItemQuery&lt;/code&gt;. The interface provides the following functions:
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public void setModelObject(ExtendedItemHandle handle)&lt;/code&gt; ---- 
+ passes the model object to the extension provider. &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public IBaseQueryDefinition[] getReportQueries(IBaseQueryDefinition parent) throws BirtException;&lt;/code&gt; ----
+returns report queries that engine uses to prepare data for the extended item.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         Chart as an extended item
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005 Actuate Corporation. All rights reserved. This program and 
+the accompanying materials are made available under the terms of the Eclipse 
+Public License v1.0 which accompanies this distribution, and is available at 
+http://www.eclipse.org/legal/epl-v10.html&lt;br&gt;&lt;br&gt;
+
+Contributors: Actuate Corporation - initial API and implementation
+      </documentation>
+   </annotation>
+
+</schema>

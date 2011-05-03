@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.birt.report.engine">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.birt.report.engine" id="emitters" name="Emitters that Support Report Rendering"/>
+      </appInfo>
+      <documentation>
+         This extension point allows new output formats to be supported in presentation engine.  The plugin registry uses this extension point registration to discover all supported output formats.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <documentation>
+            root element for the emitters extension
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="emitter" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="emitter">
+      <annotation>
+         <documentation>
+            an emitter that exports one or more output formats
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="reportItem" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the emitter extension
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the java class that implements the &lt;code&gt;IContentEmitter&lt;/code&gt; interface
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="format" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The output format that the emitter supports
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  The icon path of the emitter
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="mimeType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The MIME type for the supported output format
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="supportedImageFormats" type="string">
+            <annotation>
+               <documentation>
+                  The supported image formats
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="pagination">
+            <annotation>
+               <documentation>
+                  Pagination of output.
+&lt;br&gt;When &quot;page-break-pagination&quot; is set, pagination is based on page break configuration.It is the default value of pagination.
+&lt;br&gt;When &quot;no-pagination&quot; is set, content in the report is output as they are in one page.
+&lt;br&gt;When &quot;paper-size-pagination&quot; is set, pagination is created based on contents size.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="no-pagination">
+                  </enumeration>
+                  <enumeration value="page-break-pagination">
+                  </enumeration>
+                  <enumeration value="paper-size-pagination">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="outputDisplayNone" type="boolean">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="isHidden" type="boolean">
+            <annotation>
+               <documentation>
+                  Used to determine whether format is shown in UI
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="needOutputResultSet" type="boolean">
+            <annotation>
+               <documentation>
+                  Represents if the emitter needs to output query result set.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="reportItem">
+      <annotation>
+         <documentation>
+            allows a developer to define emitter for a report item. Used mainly for extended item, but can also be used for standard report items.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the report item that the emitterClass supports. For example, &quot;chart&quot; for chart extension item
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the emitter class that supports this type of report item for a specific format
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the report item emitter extension
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         2.2.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is a sample usage of the emitterSet extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+
+&lt;extension 
+ point=&quot;org.eclipse.birt.report.engine.emitterSet&quot;
+ name = &quot;Engine Emitters&quot;&gt;
+ &lt;emitter 
+  format=&quot;HTML&quot; 
+  id=&quot;org.eclipse.birt.report.engine.emitter.html&quot;
+  class=&quot;org.eclipse.birt.report.engine.emitter.html.HTMLReportEmitter&quot;&gt;
+  &lt;reportItem name=&quot;chart&quot;
+   id=&quot;org.eclipse.birt.report.engine.emitter.chart.html&quot;
+   class=&quot;org.eclipse.birt.report.engine.emitter.html.HTMLChartEmitter&quot;&gt;
+  &lt;/reportItem&gt;
+ &lt;/emitter&gt;
+ &lt;emitter 
+  format=&quot;FO&quot; 
+  mimeType=&quot;text/html&quot;
+  pagination=&quot;no-page&quot;
+  id=&quot;org.eclipse.birt.report.engine.emitter.fo&quot;
+  class=&quot;org.eclipse.birt.report.engine.emitter.html.FOReportEmitter&quot;&gt;
+  &lt;reportItem name=&quot;chart&quot;
+     id=&quot;org.eclipse.birt.report.engine.emitter.chart.fo&quot;
+   Class=&quot;org.eclipse.birt.report.engine.emitter.html.FOChartEmitter&quot;/&gt;
+ &lt;/emitter&gt;
+ &lt;emitter
+  mimeType=&quot;application/pdf&quot;
+  id=&quot;org.eclipse.birt.report.engine.emitter.pdf&quot;
+  class=&quot;org.eclipse.birt.report.engine.emitter.html.FOPReportEmitter&quot;&gt; 
+  &lt;reportItem name=&quot;chart&quot;
+   id=&quot;org.eclipse.birt.report.engine.emitter.chart.pdf&quot;
+   emitterClass=&quot;org.eclipse.birt.report.engine.emitter.html.FOChartEmitter&quot;/&gt;
+  &lt;/emitter&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;p&gt;
+
+Notice that in this example, the same class is used for both PDF and FO format. BIRT currently uses FO to generate both FO and PDF output.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The value of the class attribute for the emitter element must be the fully qualified name of a class that implement  &lt;code&gt;org.eclipse.birt.engine.emitter.IContentEmitter&lt;/code&gt;.&lt;p&gt;
+The value of the emitterClass attribute for the reportItem element must be a fully  qualified name of a class that implements &lt;code&gt;org.eclipse.birt.engine.extension.IReportItemEmitter&lt;/code&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         &lt;code&gt;org.eclipse.birt.report.engine.emitter.html.HTMLReportEmitter&lt;/code&gt; ---- An HTML emitter that supports report rendering to HTML format.
+&lt;code&gt;org.eclipse.birt.report.engine.layout.impl.ReportLayoutEngine&lt;/code&gt; ---- An emitter that supports report rendering to PDF format.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005 Actuate Corporation. All rights reserved. This program and 
+the accompanying materials are made available under the terms of the Eclipse 
+Public License v1.0 which accompanies this distribution, and is available at 
+http://www.eclipse.org/legal/epl-v10.html&lt;br&gt;&lt;br&gt;
+
+Contributors: Actuate Corporation - initial API and implementation
+      </documentation>
+   </annotation>
+
+</schema>

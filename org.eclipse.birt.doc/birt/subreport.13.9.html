@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <!-- MOTW-DISABLED saved from url=(0014)about:internet -->
+    <title>Create the orders subreport</title>
+    <link rel="StyleSheet" href="css/subreport.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="css/webworks.css" type="text/css" media="all" />
+    <link rel="StyleSheet" href="webworks.css" type="text/css" media="all" />
+    <script type="text/javascript" language="JavaScript1.2">
+      <!--
+        var  WebWorksRootPath = "";
+      // -->
+    </script>
+  </head>
+  <body class="" style="">
+    <div style="text-align: left;">
+      <table cellspacing="0" summary="">
+        <tr>
+          <td>
+            <a href="subreport.13.8.html"><img src="images/prev.gif" alt="Previous" border="0" /></a>
+          </td>
+          <td>
+            <a href="subreport.13.10.html"><img src="images/next.gif" alt="Next" border="0" /></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <hr align="left" />
+    <blockquote>
+      <div class="N_TutorialTask_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_TutorialTask_inner" style="white-space: nowrap;">Task 7:&nbsp;</div>
+            </td>
+            <td width="100%">
+              <div class="N_TutorialTask_inner"><a name="187726">Create the orders subreport</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="b_Body"><a name="187728">The orders subreport lists the orders for each customer in a row and column </a>format. It displays the order number and date of each order. To iterate through the Orders data set rows and display them in a row and column format, you use the table element.</p>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="187730">Choose Layout to return to the layout editor.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="187732">Drag a table element from the palette, and drop it below the </a>[CUSTOMERNAME] data element, in the detail area. Insert Table prompts you to specify the number of columns and detail rows to create for the table. The dialog also prompts you to select a data set to bind with the table.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="284754">On Insert Table, specify the following values</a>.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="b2_Bullet2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b2_Bullet2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zBulletGray">n	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b2_Bullet2_inner"><a name="284755">In Number of columns, type 2.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="b2_Bullet2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b2_Bullet2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zBulletGray">n	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b2_Bullet2_inner"><a name="284765">In Number of details, type 1.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="b2_Bullet2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b2_Bullet2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zBulletGray">n	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b2_Bullet2_inner"><a name="284790">In Data Set, select Orders from the drop-down list.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+            <div class="N_i_Indent1"><a name="284802">Choose OK. A table appears in the detail area of the list, as shown in </a><a href="#286283" title="Create the orders subreport">Figure&nbsp;13‑12</a>.</div>
+            <p class="i2_Image2"><a name="284809"><img class="Default" src="images/optrpt_tableindesign.gif" width="661" height="360" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="Figure 13-15 Table inserted in the detail area of the list" /></a></p>
+      <div class="fc2_FigCall2Title_outer" style="margin-left: 14.173199999999994pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc2_FigCall2Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;13‑12	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc2_FigCall2Title_inner"><a name="286283">Table inserted in the detail area of the list</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="222807">Choose Data Explorer, expand Data Sets, then expand Orders. The </a>columns that you specified in the query appear below Orders.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">5	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="187738">Drag ORDERNUMBER from Data Explorer, and drop it in the first cell of </a>the table’s detail row.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i_Indent1"><a name="246762">In the layout editor, the table cell in which you dropped the data set field </a>contains a data element that displays [ORDERNUMBER]. Above this data element is a label element that the layout editor automatically adds to the header row. This label displays the field name as static text and serves as the column heading.</div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">6	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="246763">Drag ORDERDATE from Data Explorer, and drop it in the second cell in </a>the detail row. The report design should look like the one shown in <a href="#227114" title="Create the orders subreport">Figure&nbsp;13‑13</a>.</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="i2_Image2"><a name="246770"><img class="Default" src="images/oprpt_layout3.gif" width="656" height="327" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="Figure 13-16 Report design includes the orders subreport" /></a></p>
+      <div class="fc2_FigCall2Title_outer" style="margin-left: 14.173199999999994pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc2_FigCall2Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;13‑13	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc2_FigCall2Title_inner"><a name="227114">Report design includes the orders subreport</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">7	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="219252">Sort the order rows by order number.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">1	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="187749">Select the Orders table.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">2	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="187750">In Property Editor, choose Sorting.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">3	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="187752">On the Sort page, choose Add to create a sort expression.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n2_NumList2_outer" style="margin-left: 14.1732pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n2_NumList2_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023FormatGray">4	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n2_NumList2_inner"><a name="284836">On New Sort Key, specify the following values, then choose OK:</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="b3_Bullet3_outer" style="margin-left: 28.3464pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b3_Bullet3_inner" style="width: 14.173199999999997pt; white-space: nowrap;">
+                <span class="zBullet">o	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b3_Bullet3_inner"><a name="284840">In Key, select ORDERNUMBER from the drop-down list.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="b3_Bullet3_outer" style="margin-left: 28.3464pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="b3_Bullet3_inner" style="width: 14.173199999999997pt; white-space: nowrap;">
+                <span class="zBullet">o	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="b3_Bullet3_inner"><a name="284841">In Direction, use the default value, Ascending.</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_n1_NumList1_outer" style="margin-left: 0pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="N_n1_NumList1_inner" style="width: 14.1732pt; white-space: nowrap;">
+                <span class="zAuto_0023Format">8	</span>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="N_n1_NumList1_inner"><a name="291203">Preview the report. The report should look like the one shown in </a><a href="#291222" title="Create the orders subreport">Figure&nbsp;13‑14</a>. </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="i2_Image2"><a name="291210"><img class="Default" src="images/oprpt_output2.gif" width="656" height="302" style="display: inline; float: none; left: 0.0; top: 0.0;" alt="Figure 13-17 Preview of the report shows repeated order records" /></a></p>
+      <div class="fc2_FigCall2Title_outer" style="margin-left: 14.173199999999994pt;">
+        <table border="0" cellspacing="0" cellpadding="0" summary="">
+          <tr style="vertical-align: baseline;">
+            <td>
+              <div class="fc2_FigCall2Title_inner" style="width: 70.866pt; white-space: nowrap;">
+                <b class="Bold">Figure&nbsp;13‑14	</b>
+              </div>
+            </td>
+            <td width="100%">
+              <div class="fc2_FigCall2Title_inner"><a name="291222">Preview of the report shows repeated order records</a></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="N_i_Indent1"><a name="307486">The same order records appear for every customer because you specified </a>a default value of 103 for customerNumber when you created the data set parameter, CustID. Because of this default value, the orders subreport always displays the order records for customer 103. The solution is to update the value of the CustID parameter dynamically each time the customer row in the master report changes. This procedure is described in the next task.</div>
+    </blockquote>
+    <hr align="left" />
+    <table align="right" summary="">
+      <tr>
+        <td class="WebWorks_Company_Name_Bottom">
+          <a href="notices.html">(c) Copyright Actuate Corporation 2009</a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

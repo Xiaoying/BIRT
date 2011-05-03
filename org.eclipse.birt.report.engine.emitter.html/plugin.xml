@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension 
+	 	point="org.eclipse.birt.report.engine.emitters"
+	 	name = "Engine html Emitters">
+	 	<emitter 
+	  		id="org.eclipse.birt.report.engine.emitter.html"
+	  		class="org.eclipse.birt.report.engine.emitter.html.HTMLReportEmitter"
+	  		format="html"
+	  		pagination="page-break-pagination"
+            outputDisplayNone="true"
+	  		mimeType="text/html"
+	  		supportedImageFormats="PNG;GIF;JPG;BMP;SWF;SVG" >
+	 	</emitter>
+   </extension>
+</plugin>

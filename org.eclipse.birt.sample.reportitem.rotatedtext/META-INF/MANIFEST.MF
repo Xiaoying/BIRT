@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rotatedtext Plug-in
+Bundle-SymbolicName: org.eclipse.birt.sample.reportitem.rotatedtext; singleton:=true
+Bundle-Version: 2.2.0.qualifier
+Bundle-Activator: org.eclipse.birt.sample.reportitem.rotatedtext.RotatedtextPlugin
+Bundle-Vendor: eclipse
+Bundle-Localization: plugin
+Export-Package: org.eclipse.birt.sample.reportitem.rotatedtext,
+ org.eclipse.birt.sample.reportitem.rotatedtext.util
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.birt.report.designer.core,
+ org.eclipse.birt.report.designer.ui;bundle-version="[2.1.0,3.0.0)",
+ org.eclipse.birt.report.designer.ui.views,
+ org.eclipse.birt.report.model;bundle-version="[2.1.0,3.0.0)",
+ org.eclipse.birt.report.engine;bundle-version="[2.1.0,3.0.0)",
+ org.eclipse.birt.core;bundle-version="[2.1.0,3.0.0)",
+ org.eclipse.ui;bundle-version="[3.2.0,4.0.0)"
+Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.4

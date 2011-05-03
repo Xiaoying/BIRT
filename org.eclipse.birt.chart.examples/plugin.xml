@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+ <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.eclipse.birt.core.ui.category"
+            class="org.eclipse.birt.chart.examples.view.ChartExamplesView"
+            icon="src/org/eclipse/birt/chart/examples/view/icons/chartselector.gif"
+            id="org.eclipse.birt.chart.examples.view.examplesview"
+            name="%ChartExamples"/>
+      </extension>
+
+
+
+   <extension
+         id="ChartWizardContext"
+         name="Chart example types"
+         point="org.eclipse.birt.chart.ui.types">
+      <chartType
+            classDefinition="org.eclipse.birt.chart.examples.radar.ui.type.RadarChart"
+            name="Radar Chart"/>            
+   </extension>   
+   
+   <extension
+         point="org.eclipse.birt.chart.ui.seriescomposites">
+      <seriescomposite
+            seriesUIProvider="org.eclipse.birt.chart.examples.radar.ui.series.RadarSeriesUIProvider"
+            seriesType="org.eclipse.birt.chart.examples.radar.model.type.impl.RadarSeriesImpl"/>
+   </extension>
+</plugin>
