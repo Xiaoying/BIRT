@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mozilla Rhino
+Bundle-SymbolicName: org.mozilla.rhino
+Bundle-Version: 1.7.1.qualifier
+Bundle-Localization: plugin
+Bundle-ClassPath: lib/js.jar
+Export-Package: org.mozilla.javascript,
+ org.mozilla.javascript.debug
+Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
